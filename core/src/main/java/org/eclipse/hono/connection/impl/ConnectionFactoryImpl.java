@@ -15,12 +15,13 @@ package org.eclipse.hono.connection.impl;
 
 import java.util.Objects;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.qpid.proton.amqp.transport.ErrorCondition;
 import org.eclipse.hono.config.ClientConfigProperties;
-import org.eclipse.hono.connection.ConnectionFactory;
 import org.eclipse.hono.connection.ConnectTimeoutException;
+import org.eclipse.hono.connection.ConnectionFactory;
 import org.eclipse.hono.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,12 +51,12 @@ public final class ConnectionFactoryImpl implements ConnectionFactory {
     private ProtonClient protonClient;
 
     /**
-     * Constructor with the Vert.x instance to use and the configuration 
+     * Constructor with the Vert.x instance to use and the configuration
      * parameters for connecting to the AMQP server as parameters.
      * <p>
      * The <em>name</em> property of the configuration is used as the basis
      * for the local container name which is then appended with a UUID.
-     * 
+     *
      * @param vertx The Vert.x instance.
      * @param config The configuration parameters.
      * @throws NullPointerException if the parameters are {@code null}.
@@ -70,7 +71,7 @@ public final class ConnectionFactoryImpl implements ConnectionFactory {
      * <p>
      * If not set, a client instance will be created when any of the <em>connect</em>
      * methods is invoked.
-     * 
+     *
      * @param protonClient The client.
      * @throws NullPointerException if the client is {@code null}.
      */
@@ -129,8 +130,10 @@ public final class ConnectionFactoryImpl implements ConnectionFactory {
         addOptions(clientOptions, effectiveUsername, effectivePassword);
 
         final ProtonClient client = protonClient != null ? protonClient : ProtonClient.create(vertx);
-        logger.debug("connecting to AMQP 1.0 container [{}://{}:{}]", clientOptions.isSsl() ? "amqps" : "amqp",
-                config.getHost(), config.getPort());
+        logger.debug("connecting to AMQP 1.0 container [{}://{}:{}] with idleTimeout [{} {}]",
+                clientOptions.isSsl() ? "amqps" : "amqp",
+                config.getHost(), config.getPort(), clientOptions.getIdleTimeout(),
+                clientOptions.getIdleTimeoutUnit());
 
         final AtomicBoolean connectionTimeoutReached = new AtomicBoolean(false);
         final Long connectionTimeoutTimerId = config.getConnectTimeout() > 0
@@ -344,6 +347,8 @@ public final class ConnectionFactoryImpl implements ConnectionFactory {
         final ProtonClientOptions options = new ProtonClientOptions();
         options.setConnectTimeout(config.getConnectTimeout());
         options.setHeartbeat(config.getHeartbeatInterval());
+        options.setIdleTimeoutUnit(TimeUnit.MILLISECONDS);
+        options.setIdleTimeout(config.getIdleTimeout());
         options.setReconnectAttempts(0);
         return options;
     }
