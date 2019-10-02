@@ -5,6 +5,7 @@ weight = 471
 
 Eclipse Hono&trade;'s components are provided as container images which can be run on arbitrary container orchestration platforms.
 This page describes the steps necessary to deploy Hono to a [Kubernetes](https://kubernetes.io) cluster using the [Helm package manager](https://helm.sh).
+
 <!--more-->
 
 {{% note %}}
@@ -40,22 +41,22 @@ The command line client requires a Java 11 runtime environment to run.
 
 ## Deploying Hono
 
-The recommended way of deploying Hono is by means of using Helm's *Tiller* service running on the Kubernetes cluster:
+The recommended way of deploying Hono is by means of using Helm's _Tiller_ service running on the Kubernetes cluster:
 
-~~~sh
+```sh
 # in directory: eclipse-hono-$VERSION
 helm install --dep-up --name hono --namespace hono eclipse-hono/
-~~~
+```
 
 This will create namespace `hono` in the cluster and install all the components to that namespace. The name of the Helm release will be `hono`.
 
 The status of the deployment can be checked using any of the following commands:
 
-~~~sh
+```sh
 helm list
 helm status hono
 helm get hono
-~~~
+```
 
 ### Deploying Hono using kubectl
 
@@ -63,28 +64,28 @@ In cases where installation of Helm's Tiller service into the cluster is not an 
 
 The following commands generate the resource descriptors:
 
-~~~sh
+```sh
 # in directory: eclipse-hono-$VERSION
 mkdir resources
 helm dep update eclipse-hono/
 helm template --name hono --namespace hono --output-dir resources eclipse-hono/
-~~~
+```
 
 This will create a `resources/eclipse-hono` folder containing all the resource descriptors which can then be deployed to the cluster using `kubectl`:
 
-~~~sh
+```sh
 # in directory: eclipse-hono-$VERSION
 kubectl create namespace hono
 kubectl config set-context $(kubectl config current-context) --namespace=hono
 kubectl apply -f ./resources -R
-~~~
+```
 
 ## Verifying the Installation
 
-Once deployment has completed, Hono's external API endpoints are exposed via corresponding Kubernetes *Services*.
+Once deployment has completed, Hono's external API endpoints are exposed via corresponding Kubernetes _Services_.
 The following command lists all services and their endpoints (replace `hono` with the namespace that you have deployed to):
 
-~~~sh
+```sh
 kubectl get service -n hono
 
 NAME                                    TYPE           CLUSTER-IP       EXTERNAL-IP      PORT(S)
@@ -104,27 +105,27 @@ hono-service-auth-headless              ClusterIP      None             <none>  
 hono-service-device-registry            ClusterIP      10.105.190.233   <none>           5671/TCP
 hono-service-device-registry-ext        LoadBalancer   10.101.42.99     10.101.42.99     28080:31080/TCP,28443:31443/TCP
 hono-service-device-registry-headless   ClusterIP      None             <none>           <none>
-~~~
+```
 
 The listing above has been retrieved from a Minikube cluster that emulates a load balancer via the `minikube tunnel` command (refer to the [Minikube Networking docs](https://github.com/kubernetes/minikube/blob/master/docs/networking.md#loadbalancer-emulation-minikube-tunnel) for details).
-The service endpoints can be accessed at the *EXTERNAL-IP* addresses and corresponding *PORT(S)*, e.g. 8080 for the HTTP adapter (*hono-adapter-http-vertx*) and 28080 for the device registry (*hono-service-device-registry*).
+The service endpoints can be accessed at the _EXTERNAL-IP_ addresses and corresponding _PORT(S)_, e.g. 8080 for the HTTP adapter (_hono-adapter-http-vertx_) and 28080 for the device registry (_hono-service-device-registry_).
 
 The following command assigns the IP address of the device registry service to the `REGISTRY_IP` environment variable so that they can easily be used from the command line:
 
-~~~sh
+```sh
 export REGISTRY_IP=$(kubectl get service hono-service-device-registry-ext --output='jsonpath={.status.loadBalancer.ingress[0].ip}' -n hono)
-~~~
+```
 
-The following command can then be used to check for the existence of the *DEFAULT_TENANT* which is created as part of the installation:
+The following command can then be used to check for the existence of the _DEFAULT_TENANT_ which is created as part of the installation:
 
-~~~sh
+```sh
 curl -sIX GET http://$REGISTRY_IP:28080/v1/tenants/DEFAULT_TENANT
 
 HTTP/1.1 200 OK
 etag: 89d40d26-5956-4cc6-b978-b15fda5d1823
 content-type: application/json; charset=utf-8
 content-length: 260
-~~~
+```
 
 <a name="dashboard"></a>
 
@@ -133,9 +134,9 @@ content-length: 260
 Hono comes with an example Grafana dashboard which provides some insight into the messages flowing through the protocol adapters.
 The following command needs to be run first in order to forward the Grafana service's endpoint to the local host:
 
-~~~sh
+```sh
 kubectl port-forward service/hono-grafana 3000 -n hono
-~~~
+```
 
 Then the dashboard can be opened by pointing your browser to `http://localhost:3000` using credentials `admin:admin`.
 
@@ -143,16 +144,16 @@ Then the dashboard can be opened by pointing your browser to `http://localhost:3
 
 A Hono instance that has been deployed using Helm's Tiller service can be undeployed by running
 
-~~~sh
+```sh
 helm delete --purge hono
-~~~
+```
 
 A Hono instance that has been deployed manually using the resource files can be undeployed by running
 
-~~~sh
+```sh
 # in directory: eclipse-hono-$VERSION
 kubectl delete -f ./resources -R
-~~~
+```
 
 ## Using a production grade AMQP Messaging Network and Device Registry
 
@@ -204,11 +205,11 @@ adapters:
     credentialsPath: "/etc/custom/amqp-credentials.properties"
 ```
 
-Both the *amqpMessagingNetworkSpec* and the *commandAndControlSpec* need to contain Hono client configuration properties
+Both the _amqpMessagingNetworkSpec_ and the _commandAndControlSpec_ need to contain Hono client configuration properties
 as described in the [client admin guide]({{< relref "/admin-guide/hono-client-configuration" >}}).
 Make sure to adapt/add properties as required by the AMQP Messaging Network.
 
-Note that *my-secret* is expected to already exist in the namespace that Hono gets deployed to, i.e. the Helm chart will **not**
+Note that _my-secret_ is expected to already exist in the namespace that Hono gets deployed to, i.e. the Helm chart will **not**
 create this secret.
 
 Assuming that the file is named `customAmqpNetwork.yaml`, the values can then be passed in to the `helm install` command
@@ -261,14 +262,14 @@ adapters:
     credentialsPath: "/etc/custom/device-connection-service-credentials.properties"
 ```
 
-All of the *specs* need to contain Hono client configuration properties
+All of the _specs_ need to contain Hono client configuration properties
 as described in the [client admin guide]({{< relref "/admin-guide/hono-client-configuration" >}}).
 Make sure to adapt/add properties as required by the custom service implementations.
-The information contained in the *specs* will then be used by all protocol adapters that get deployed.
+The information contained in the _specs_ will then be used by all protocol adapters that get deployed.
 As a consequence, it is not possible to use credentials for the services which are specific to the
 individual protocol adapters.
 
-Note that *my-secret* is expected to already exist in the namespace that Hono gets deployed to, i.e. the Helm chart will **not**
+Note that _my-secret_ is expected to already exist in the namespace that Hono gets deployed to, i.e. the Helm chart will **not**
 create this secret.
 
 Assuming that the file is named `customRegistry.yaml`, the values can then be passed in to the `helm install` command
@@ -285,47 +286,45 @@ Hono's example Device Registry component contains a simple in-memory implementat
 This example implementation is used by default when the example registry is deployed.
 
 Hono also contains a production ready, data grid based implementation of the Device Connection API which can be deployed and used instead of
-the example implementation. The component can be deployed by means of setting the *deviceConnectionService.enabled* property to `true` when
+the example implementation. The component can be deployed by means of setting the _deviceConnectionService.enabled_ property to `true` when
 running Helm:
 
-~~~sh
+```sh
 # in directory: eclipse-hono-$VERSION
 helm install --dep-up --name hono --namespace hono --set deviceConnectionService.enabled=true eclipse-hono/
-~~~
+```
 
 This will deploy the Device Connection service and configure all protocol adapters to use it instead of the example Device Registry implementation.
 However, the service requires a connection to a data grid in order to store the device connection data.
 The Helm chart supports deployment of a simple data grid which can be used for experimenting by means of setting the
-*dataGridDeployExample* property to `true` when running Helm:
+_dataGridDeployExample_ property to `true` when running Helm:
 
-~~~sh
+```sh
 # in directory: eclipse-hono-$VERSION
 helm install --dep-up --name hono --namespace hono --set deviceConnectionService.enabled=true --set dataGridDeployExample=true eclipse-hono/
-~~~
+```
 
 This will deploy the data grid and configure the Device Connection service to use it for storing the connection data.
 
 The Device Connection service can also be configured to connect to an already existing data grid. Please refer to the
 [admin guide]({{< relref "/admin-guide/device-connection-config.md" >}}) for details regarding the corresponding configuration properties.
 
-
 ## Deploying optional Adapters
 
 The Helm chart supports deployment of additional protocol adapters which are still considered experimental or have been deprecated.
 The following table provides an overview of the corresponding configuration properties that need to be set on deployment.
 
-| Property                     | Default  | Description                              |
-| :--------------------------- | :------- | :--------------------------------------- |
-| *adapters.lora.enabled*      | `false` | Indicates if the (experimental) LoRa WAN protocol adapter should be deployed. |
-| *adapters.kura.enabled*      | `false` | Indicates if the deprecated Kura protocol adapter should be deployed. |
+| Property                | Default | Description                                                                   |
+| :---------------------- | :------ | :---------------------------------------------------------------------------- |
+| _adapters.lora.enabled_ | `false` | Indicates if the (experimental) LoRa WAN protocol adapter should be deployed. |
+| _adapters.kura.enabled_ | `false` | Indicates if the deprecated Kura protocol adapter should be deployed.         |
 
 The following command will deploy the LoRa adapter along with Hono's standard adapters:
 
-~~~sh
+```sh
 # in directory: eclipse-hono-$VERSION
 helm install --dep-up --name hono --namespace hono --set adapters.lora.enabled=true eclipse-hono/
-~~~
-
+```
 
 ## Deploying custom Container Images
 
@@ -338,18 +337,18 @@ The container images created as part of the build process need to be made availa
 The first step is getting the source code of Hono. Please refer to [Building from Source]({{< relref "building_hono.md" >}}) for details.
 Once the source code has been retrieved, the build process can be started using the following command:
 
-~~~sh
+```sh
 # in base directory of Hono working tree:
 mvn clean install -Pbuild-docker-image,metrics-prometheus
-~~~
+```
 
 After the build process has finished, the custom container images need to be pushed to the registry so that the Kubernetes cluster can pull them from there during deployment.
 Assuming that the images should be tagged with `1.0-CUSTOM` and the container registry name is `my.registry.io`, the following command can be used to tag the locally built images and push them to the registry:
 
-~~~sh
+```sh
 # in base directory of Hono working tree:
 ./push_hono_images.sh 1.0-CUSTOM my.registry.io
-~~~
+```
 
 {{% note %}}
 You may need to log in to the (private) container registry before pushing the images.
@@ -357,34 +356,35 @@ You may need to log in to the (private) container registry before pushing the im
 
 Once the images have been pushed, the deployment can be done using Helm:
 
-~~~sh
+```sh
 # in Hono working tree directory: hono/deploy
 helm install --dep-up --name hono --namespace hono --set deviceRegistry.imageName=my.registry.io/eclipse/hono-service-device-registry:1.0-CUSTOM,authServer.imageName=my.registry.io/eclipse/hono-service-auth:1.0-CUSTOM,deviceConnectionService.imageName=my.registry.io/eclipse/hono-service-device-connection:1.0-CUSTOM,adapters.amqp.imageName=my.registry.io/eclipse/hono-adapter-amqp-vertx:1.0-CUSTOM,adapters.mqtt.imageName=my.registry.io/eclipse/hono-adapter-mqtt-vertx:1.0-CUSTOM,adapters.http.imageName=my.registry.io/eclipse/hono-adapter-http-vertx:1.0-CUSTOM target/deploy/helm/eclipse-hono/
-~~~
+```
 
 ### Deploying to Minikube
 
 When using Minikube as the deployment target, things are a little easier. Minikube comes with an embedded Docker daemon which can be used to build the container images instead of using a local Docker daemon, thus eliminating the need to push the images to a registry altogether.
 In order to use Minikube's Docker daemon, the following command needs to be run:
 
-~~~sh
+```sh
 eval $(minikube docker-env)
-~~~
+```
 
 This will set the Docker environment variables to point to Minikube's Docker daemon which can then be used for building the container images and storing them locally in the Minikube VM.
 
 In any case the build process can be started using the following command:
 
-~~~sh
+```sh
 # in base directory of Hono working tree:
 mvn clean install -Pbuild-docker-image,metrics-prometheus
-~~~
+```
+
 The newly built images can then be deployed using Helm:
 
-~~~sh
+```sh
 # in Hono working tree directory: hono/deploy
 helm install --dep-up --name hono --namespace hono target/deploy/helm/eclipse-hono/
-~~~
+```
 
 ### Deploying to Azure Kubernetes Service (AKS)
 
@@ -441,23 +441,32 @@ Finally install Eclipse Hono™. Leveraging the _managed-premium-retain_ storage
 
 ```bash
 # in Hono working tree directory: hono/deploy
-helm install target/deploy/helm/eclipse-hono/ \
-    --dep-up \
-    --name hono \
+helm upgrade hono target/deploy/helm/eclipse-hono/ \
     --namespace $k8s_namespace \
     --set adapters.mqtt.svc.annotations."service\.beta\.kubernetes\.io/azure-load-balancer-resource-group"=$resourcegroup_name \
     --set adapters.http.svc.annotations."service\.beta\.kubernetes\.io/azure-load-balancer-resource-group"=$resourcegroup_name \
     --set adapters.amqp.svc.annotations."service\.beta\.kubernetes\.io/azure-load-balancer-resource-group"=$resourcegroup_name \
     --set deviceRegistryExample.svc.annotations."service\.beta\.kubernetes\.io/azure-load-balancer-resource-group"=$resourcegroup_name \
-    --set amqpMessagingNetworkExample.dispatchRouter.svc.annotations."service\.beta\.kubernetes\.io/azure-load-balancer-resource-group"=$resourcegroup_name \
     --set deviceRegistryExample.storageClass=managed-premium-retain \
     --set deviceRegistryExample.resetFiles=false \
     --set adapters.mqtt.svc.loadBalancerIP=$mqtt_ip_address \
     --set adapters.http.svc.loadBalancerIP=$http_ip_address \
     --set adapters.amqp.svc.loadBalancerIP=$amqp_ip_address \
     --set deviceRegistryExample.svc.loadBalancerIP=$registry_ip_address \
-    --set amqpMessagingNetworkExample.dispatchRouter.svc.loadBalancerIP=$network_ip_address
+    --set amqpMessagingNetworkExample.enabled=false \
+    --set adapters.amqpMessagingNetworkSpec.username=$service_bus_key_name \
+    --set adapters.amqpMessagingNetworkSpec.password=$service_bus_key \
+    --set adapters.amqpMessagingNetworkSpec.host=$service_bus_namespace.servicebus.windows.net \
+    --set adapters.amqpMessagingNetworkSpec.idleTimeoutMillis=120000 \
+    --set adapters.amqpMessagingNetworkSpec.tlsEnabled=true \
+    --set adapters.commandAndControlSpec.username=$service_bus_key_name \
+    --set adapters.commandAndControlSpec.password=$service_bus_key \
+    --set adapters.commandAndControlSpec.host=$service_bus_namespace.servicebus.windows.net \
+    --set adapters.commandAndControlSpec.idleTimeoutMillis=120000 \
+    --set adapters.commandAndControlSpec.tlsEnabled=true
 ```
+
+echo java -jar hono-cli-*-exec.jar --hono.client.host=$service_bus_namespace.servicebus.windows.net --hono.client.port=5671 --hono.client.username=$service_bus_key_name --hono.client.password=$service_bus_key --spring.profiles.active=receiver --hono.client.idleTimeout=120000  --hono.client.amqpHostname=$service_bus_namespace.servicebus.windows.net --hono.client.tlsEnabled=true --tenant.id=$MY_TENANT
 
 Note: add the following lines in case you opted for the Azure Service Bus variant:
 
@@ -491,13 +500,21 @@ As Azure Service Bus does not support auto creation of queues you have to create
 ```bash
 az servicebus queue create --resource-group $resourcegroup_name \
     --namespace-name $service_bus_namespace \
-    --name $MY_TENANT
+    --name event~$MY_TENANT --max-size 1024
 ```
+
+
+```bash
+az servicebus queue create --resource-group $resourcegroup_name \
+    --namespace-name $service_bus_namespace \
+    --name telemetry~$MY_TENANT --max-size 1024 --enable-partitioning true
+```
+
 
 ### Using Jaeger Tracing
 
 Hono's components are instrumented using OpenTracing to allow tracking of the distributed processing of messages flowing through the system.
-The Hono chart can be configured to report tracing information to the [Jaeger tracing system](https://jaegertracing.io). The *Spans* reported
+The Hono chart can be configured to report tracing information to the [Jaeger tracing system](https://jaegertracing.io). The _Spans_ reported
 by the components can then be viewed in a web browser.
 
 In order for Hono's components to use the Jaeger client for reporting tracing information, the container images need to be built
@@ -505,27 +522,28 @@ with the `jaeger` Maven profile. Please refer to [Monitoring & Tracing]
 ({{< relref "/admin-guide/monitoring-tracing-config.md#configuring-usage-of-jaeger-tracing-included-in-docker-images" >}}) for details.
 The newly built images also need to be made available to the target Kubernetes cluster as described in the two previous sections.
 
-The chart can be configured to deploy and use an example Jaeger back end by means of setting the *jaegerBackendDeployExample* property
+The chart can be configured to deploy and use an example Jaeger back end by means of setting the _jaegerBackendDeployExample_ property
 to `true` when running Helm:
 
-~~~sh
+```sh
 # in Hono working tree directory: hono/deploy
 helm install --dep-up --name hono --namespace hono --set jaegerBackendExample.enabled=true target/deploy/helm/eclipse-hono/
-~~~
+```
 
 This will create a Jaeger back end instance suitable for testing purposes and will configure all deployed Hono components to use the
 Jaeger back end.
 
 The following command can then be used to return the IP address with which the Jaeger UI can be accessed in a browser (ensure `minikube tunnel` is running when using minikube):
-~~~sh
+
+```sh
 kubectl get service hono-jaeger-query --output='jsonpath={.status.loadBalancer.ingress[0].ip}' -n hono
-~~~
+```
 
 If no example Jaeger back end should be deployed but instead an existing Jaeger installation should be used,
-the chart's *jaegerAgentConf* property can be set to environment variables which are passed in to
+the chart's _jaegerAgentConf_ property can be set to environment variables which are passed in to
 the Jaeger Agent that is deployed with each of Hono's components.
 
-~~~sh
+```sh
 # in Hono working tree directory: hono/deploy
 helm install --dep-up --name hono --namespace hono --set jaegerAgentConf.REPORTER_TYPE=tchannel --set jaegerAgentConf.REPORTER_TCHANNEL_HOST_PORT=my-jaeger-collector:14267 target/deploy/helm/eclipse-hono/
-~~~
+```

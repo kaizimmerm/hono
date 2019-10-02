@@ -62,13 +62,15 @@ public class CommandClientImpl extends AbstractRequestResponseClient<BufferResul
      * @param replyId The replyId to use in the reply-to address.
      * @throws NullPointerException if any of the parameters are {@code null}.
      */
-    CommandClientImpl(
+    protected CommandClientImpl(
             final HonoConnection connection,
             final String tenantId,
             final String replyId) {
 
         super(connection, tenantId, replyId);
     }
+
+
 
     /**
      * Creates a client for sending commands to devices.
@@ -80,7 +82,7 @@ public class CommandClientImpl extends AbstractRequestResponseClient<BufferResul
      * @param receiver The link to use for receiving command responses.
      * @throws NullPointerException if any of the parameters are {@code null}.
      */
-    CommandClientImpl(
+    protected CommandClientImpl(
             final HonoConnection connection,
             final String tenantId,
             final String replyId,
@@ -92,7 +94,7 @@ public class CommandClientImpl extends AbstractRequestResponseClient<BufferResul
         this.receiver = Objects.requireNonNull(receiver);
     }
 
-    /**
+	/**
      * Gets the AMQP <em>target</em> address to use for sending command requests
      * to Hono's Command &amp; Control API endpoint.
      *
