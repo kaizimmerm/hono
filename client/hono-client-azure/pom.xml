@@ -38,11 +38,6 @@
          <groupId>org.eclipse.hono</groupId>
          <artifactId>hono-client</artifactId>
       </dependency>
-      <dependency>
-            <groupId>com.microsoft.azure</groupId>
-            <artifactId>azure-servicebus</artifactId>
-            <version>3.1.0</version>
-        </dependency>
    </dependencies>
 
 
@@ -90,10 +85,10 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-checkstyle-plugin</artifactId>
-      </plugin>
+<!--       <plugin> -->
+<!--         <groupId>org.apache.maven.plugins</groupId> -->
+<!--         <artifactId>maven-checkstyle-plugin</artifactId> -->
+<!--       </plugin> -->
     </plugins>
   </build>
 </project>

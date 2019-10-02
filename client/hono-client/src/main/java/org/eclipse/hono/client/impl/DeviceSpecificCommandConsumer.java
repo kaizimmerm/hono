@@ -15,7 +15,6 @@ package org.eclipse.hono.client.impl;
 
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
-
 import org.eclipse.hono.client.Command;
 import org.eclipse.hono.client.CommandContext;
 import org.eclipse.hono.client.HonoConnection;
@@ -24,7 +23,6 @@ import org.eclipse.hono.util.CommandConstants;
 import org.eclipse.hono.util.ResourceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import io.opentracing.Span;
 import io.opentracing.SpanContext;
 import io.opentracing.Tracer;

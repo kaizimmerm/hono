@@ -466,7 +466,13 @@ helm upgrade hono target/deploy/helm/eclipse-hono/ \
     --set adapters.commandAndControlSpec.tlsEnabled=true
 ```
 
+```bash
 echo java -jar hono-cli-*-exec.jar --hono.client.host=$service_bus_namespace.servicebus.windows.net --hono.client.port=5671 --hono.client.username=$service_bus_key_name --hono.client.password=$service_bus_key --spring.profiles.active=receiver --hono.client.idleTimeout=120000  --hono.client.amqpHostname=$service_bus_namespace.servicebus.windows.net --hono.client.tlsEnabled=true --tenant.id=$MY_TENANT
+```
+
+```bash
+echo java -jar hono-cli-*-exec.jar --hono.client.host=$service_bus_namespace.servicebus.windows.net --hono.client.port=5671 --hono.client.username=$service_bus_key_name --hono.client.password=$service_bus_key --spring.profiles.active=command --hono.client.idleTimeout=120000  --hono.client.amqpHostname=$service_bus_namespace.servicebus.windows.net --hono.client.tlsEnabled=true --tenant.id=$MY_TENANT --device.id=$MY_DEVICE
+```
 
 Note: add the following lines in case you opted for the Azure Service Bus variant:
 
@@ -477,6 +483,35 @@ Note: add the following lines in case you opted for the Azure Service Bus varian
     --set amqpMessagingNetworkExample.broker.servicebus.saslUsername=$service_bus_key_name \
     --set amqpMessagingNetworkExample.broker.servicebus.saslPassword=$service_bus_key \
     --set amqpMessagingNetworkExample.broker.servicebus.host=$service_bus_namespace.servicebus.windows.net \
+```
+
+```bash
+helm install target/deploy/helm/eclipse-hono/ \
+--namespace $k8s_namespace \
+--name hono \
+--set adapters.mqtt.svc.annotations."service\.beta\.kubernetes\.io/azure-load-balancer-resource-group"=$resourcegroup_name \
+--set adapters.http.svc.annotations."service\.beta\.kubernetes\.io/azure-load-balancer-resource-group"=$resourcegroup_name \
+--set adapters.amqp.svc.annotations."service\.beta\.kubernetes\.io/azure-load-balancer-resource-group"=$resourcegroup_name \
+--set deviceRegistryExample.svc.annotations."service\.beta\.kubernetes\.io/azure-load-balancer-resource-group"=$resourcegroup_name \
+--set deviceRegistryExample.storageClass=managed-premium-retain \
+--set deviceRegistryExample.resetFiles=false \
+--set adapters.mqtt.svc.loadBalancerIP=$mqtt_ip_address \
+--set adapters.http.svc.loadBalancerIP=$http_ip_address \
+--set adapters.amqp.svc.loadBalancerIP=$amqp_ip_address \
+--set deviceRegistryExample.svc.loadBalancerIP=$registry_ip_address \
+--set amqpMessagingNetworkExample.enabled=false \
+--set adapters.amqpMessagingNetworkSpec.username=$service_bus_key_name \
+--set adapters.amqpMessagingNetworkSpec.password=$service_bus_key \
+--set adapters.amqpMessagingNetworkSpec.host=$service_bus_namespace.servicebus.windows.net \
+--set adapters.amqpMessagingNetworkSpec.amqpHostname=$service_bus_namespace.servicebus.windows.net \
+--set adapters.amqpMessagingNetworkSpec.idleTimeout=120000 \
+--set adapters.amqpMessagingNetworkSpec.tlsEnabled=true \
+--set adapters.commandAndControlSpec.username=$service_bus_key_name \
+--set adapters.commandAndControlSpec.password=$service_bus_key \
+--set adapters.commandAndControlSpec.host=$service_bus_namespace.servicebus.windows.net \
+--set adapters.commandAndControlSpec.amqpHostname=$service_bus_namespace.servicebus.windows.net \
+--set adapters.commandAndControlSpec.idleTimeout=120000 \
+--set adapters.commandAndControlSpec.tlsEnabled=true
 ```
 
 Have fun with the Eclipse Hono™ on Microsoft Azure!
@@ -501,15 +536,16 @@ As Azure Service Bus does not support auto creation of queues you have to create
 az servicebus queue create --resource-group $resourcegroup_name \
     --namespace-name $service_bus_namespace \
     --name event~$MY_TENANT --max-size 1024
-```
-
-
-```bash
 az servicebus queue create --resource-group $resourcegroup_name \
     --namespace-name $service_bus_namespace \
     --name telemetry~$MY_TENANT --max-size 1024 --enable-partitioning true
+az servicebus topic create --resource-group $resourcegroup_name \
+    --namespace-name $service_bus_namespace \
+    --name command~$MY_TENANT --max-size 1024
+az servicebus topic create --resource-group $resourcegroup_name \
+    --namespace-name $service_bus_namespace \
+    --name command_response~$MY_TENANT --max-size 1024
 ```
-
 
 ### Using Jaeger Tracing
 

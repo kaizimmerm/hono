@@ -1,0 +1,59 @@
+hono:
+  app:
+    maxInstances: 1
+  http:
+    bindAddress: 0.0.0.0
+    insecurePortBindAddress: 0.0.0.0
+    insecurePortEnabled: true
+    keyPath: /etc/hono/key.pem
+    certPath: /etc/hono/cert.pem
+    tenantIdleTimeout: "1h"
+  healthCheck:
+    port: 8088
+    bindAddress: "0.0.0.0"
+    keyPath: "/etc/hono/key.pem"
+    certPath: "/etc/hono/cert.pem"
+  messaging:
+    amqpHostname: kaihonons.servicebus.windows.net
+    host: kaihonons.servicebus.windows.net
+    idleTimeout: 120000
+    password: 9WMXGoBemHXLrpPpIpDgyxkuhJ8T6CuitPezHsVxBIc=
+    tlsEnabled: true
+    username: RootManageSharedAccessKey
+
+  command:
+    amqpHostname: kaihonons.servicebus.windows.net
+    host: kaihonons.servicebus.windows.net
+    idleTimeout: 120000
+    password: $service_bus_key
+    tlsEnabled: true
+    username: RootManageSharedAccessKey
+
+  tenant:
+    name: Hono adapter-http-vertx
+    host: hono-service-device-registry
+    port: 5671
+    credentialsPath: /etc/hono/adapter.credentials
+    trustStorePath: /etc/hono/trusted-certs.pem
+    hostnameVerificationRequired: false
+  registration:
+    name: Hono adapter-http-vertx
+    host: hono-service-device-registry
+    port: 5671
+    credentialsPath: /etc/hono/adapter.credentials
+    trustStorePath: /etc/hono/trusted-certs.pem
+    hostnameVerificationRequired: false
+  credentials:
+    name: Hono adapter-http-vertx
+    host: hono-service-device-registry
+    port: 5671
+    credentialsPath: /etc/hono/adapter.credentials
+    trustStorePath: /etc/hono/trusted-certs.pem
+    hostnameVerificationRequired: false
+  deviceConnection:
+    name: Hono adapter-http-vertx
+    host: hono-service-device-registry
+    port: 5671
+    credentialsPath: /etc/hono/adapter.credentials
+    trustStorePath: /etc/hono/trusted-certs.pem
+    hostnameVerificationRequired: false

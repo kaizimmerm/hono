@@ -157,7 +157,7 @@ adapters:
   amqp:
     # imageName contains the name (including registry and tag)
     # of the container image to use for the AMQP adapter
-    imageName: kaisregistry.azurecr.io/kaizimmerm/hono-adapter-amqp-vertx:1047
+    imageName: ${docker.repository}/hono-adapter-amqp-vertx:${project.version}
 
     svc:
       annotations: {}
@@ -215,7 +215,7 @@ adapters:
     enabled: false
     # imageName contains the name (including registry and tag)
     # of the container image to use for the CoAP adapter
-    imageName: kaisregistry.azurecr.io/kaizimmerm/hono-adapter-coap-vertx:1047
+    imageName: ${docker.repository}/hono-adapter-coap-vertx:${project.version}
 
     svc:
       annotations: {}
@@ -260,7 +260,7 @@ adapters:
   http:
     # imageName contains the name (including registry and tag)
     # of the container image to use for the HTTP adapter
-    imageName: kaisregistry.azurecr.io/kaizimmerm/hono-adapter-http-vertx:1047
+    imageName: ${docker.repository}/hono-adapter-http-vertx:${project.version}
 
     svc:
       annotations: {}
@@ -316,7 +316,7 @@ adapters:
     enabled: false
     # imageName contains the name (including registry and tag)
     # of the container image to use for the LoRa adapter
-    imageName: kaisregistry.azurecr.io/kaizimmerm/hono-adapter-lora-vertx:1047
+    imageName: ${docker.repository}/hono-adapter-lora-vertx:${project.version}
 
     svc:
       annotations: {}
@@ -369,7 +369,7 @@ adapters:
   mqtt:
     # imageName contains the name (including registry and tag)
     # of the container image to use for the MQTT adapter
-    imageName: kaisregistry.azurecr.io/kaizimmerm/hono-adapter-mqtt-vertx:1047
+    imageName: ${docker.repository}/hono-adapter-mqtt-vertx:${project.version}
 
     svc:
       annotations: {}
@@ -425,7 +425,7 @@ adapters:
     enabled: false
     # imageName contains the name (including registry and tag)
     # of the container image to use for the Kura adapter
-    imageName: kaisregistry.azurecr.io/kaizimmerm/hono-adapter-kura:1047
+    imageName: ${docker.repository}/hono-adapter-kura:${project.version}
     svc:
       annotations: {}
       loadBalancerIP:
@@ -481,7 +481,7 @@ authServer:
 
   # imageName contains the name (including registry and tag)
   # of the container image to use for the Auth Server
-  imageName: kaisregistry.azurecr.io/kaizimmerm/hono-service-auth:1047
+  imageName: ${docker.repository}/hono-service-auth:${project.version}
 
   # extraSecretMounts describes additional secrets that should be mounted into the
   # Auth Server's' container filesystem. The files from the secret(s) can
@@ -555,7 +555,7 @@ deviceRegistryExample:
 
   # imageName contains the name (including registry and tag)
   # of the container image to use for the example Device Registry
-  imageName: kaisregistry.azurecr.io/kaizimmerm/hono-service-device-registry:1047
+  imageName: ${docker.repository}/hono-service-device-registry:${project.version}
 
   svc:
     annotations: {}
@@ -580,7 +580,7 @@ deviceRegistryExample:
 
   # data defines the location of files containing data
   # that should be used to initialize the example Device Registry during startup.
-  # The files are ource from where
+  # The files are ource from where 
   data:
     # volumeName contains the name of the service pod's volume that has been created for the
     # secret containing the example data files.
@@ -647,7 +647,7 @@ deviceConnectionService:
 
   # imageName contains the name (including registry and tag)
   # of the container image to use for the Device Connection service
-  imageName: kaisregistry.azurecr.io/kaizimmerm/hono-service-device-connection:1047
+  imageName: ${docker.repository}/hono-service-device-connection:${project.version}
   svc:
     annotations: {}
 

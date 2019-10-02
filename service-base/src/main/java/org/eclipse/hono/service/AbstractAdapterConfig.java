@@ -13,9 +13,11 @@
 
 package org.eclipse.hono.service;
 
+import java.net.URISyntaxException;
 import java.util.Optional;
-
 import org.eclipse.hono.cache.CacheProvider;
+import org.eclipse.hono.client.AzureCommandConsumerFactory;
+import org.eclipse.hono.client.AzureHonoConnection;
 import org.eclipse.hono.client.CommandConsumerFactory;
 import org.eclipse.hono.client.CredentialsClientFactory;
 import org.eclipse.hono.client.DeviceConnectionClientFactory;
@@ -45,9 +47,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cache.caffeine.CaffeineCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
-
 import com.github.benmanes.caffeine.cache.Caffeine;
-
 import io.opentracing.Tracer;
 import io.opentracing.contrib.tracerresolver.TracerResolver;
 import io.opentracing.noop.NoopTracerFactory;
@@ -407,11 +407,12 @@ public abstract class AbstractAdapterConfig {
      * via the AMQP Messaging Network.
      *
      * @return The factory.
+     * @throws URISyntaxException in case Azure Service Bus URI could not be build out of config
      */
     @Bean
     @Scope("prototype")
-    public CommandConsumerFactory commandConsumerFactory() {
-        return CommandConsumerFactory.create(commandConsumerConnection(), gatewayMapper());
+    public CommandConsumerFactory commandConsumerFactory() throws URISyntaxException {
+        return AzureCommandConsumerFactory.create(commandConsumerConnection(), gatewayMapper());
     }
 
     /**
@@ -421,8 +422,8 @@ public abstract class AbstractAdapterConfig {
      */
     @Bean
     @Scope("prototype")
-    public HonoConnection commandConsumerConnection() {
-        return HonoConnection.newConnection(vertx(), commandConsumerFactoryConfig());
+    public AzureHonoConnection commandConsumerConnection() {
+        return AzureHonoConnection.newConnection(vertx(), commandConsumerFactoryConfig());
     }
 
     /**
@@ -527,7 +528,7 @@ public abstract class AbstractAdapterConfig {
 
     /**
      * Creates a new instance of {@link ResourceLimitChecks} based on prometheus metrics data.
-     * 
+     *
      * @return A ResourceLimitChecks instance.
      */
     @Bean

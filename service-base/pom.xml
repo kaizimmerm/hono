@@ -79,7 +79,7 @@
     </dependency>
     <dependency>
      <groupId>org.eclipse.hono</groupId>
-     <artifactId>hono-client</artifactId>
+     <artifactId>hono-client-azure</artifactId>
     </dependency>
     <dependency>
       <groupId>org.eclipse.hono</groupId>

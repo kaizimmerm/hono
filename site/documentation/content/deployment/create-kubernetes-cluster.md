@@ -30,10 +30,10 @@ The command to start the VM will look something like this:
 minikube start --cpus 2 --memory 8192
 ```
 
-After the Minikube VM has started successfully, the `minikube tunnel` command should be run in order to support Hono's services being deployed using the *LoadBalancer* type. Please refer to the [Minikube Networking docs](https://github.com/kubernetes/minikube/blob/master/docs/networking.md#access-to-loadbalancer-services-using-minikube-tunnel) for details.
+After the Minikube VM has started successfully, the `minikube tunnel` command should be run in order to support Hono's services being deployed using the _LoadBalancer_ type. Please refer to the [Minikube Networking docs](https://github.com/kubernetes/minikube/blob/master/docs/networking.md#access-to-loadbalancer-services-using-minikube-tunnel) for details.
 
 {{% note title="Supported Kubernetes Versions" %}}
-Minikube will use the most recent Kubernetes version that was available when it has been compiled by default. Hono *should* run on any version of Kubernetes starting with 1.13.6. However, it has been tested with several specific versions only so if you experience any issues with running Hono on a more recent version, please try to deploy to 1.13.6 before
+Minikube will use the most recent Kubernetes version that was available when it has been compiled by default. Hono _should_ run on any version of Kubernetes starting with 1.13.6. However, it has been tested with several specific versions only so if you experience any issues with running Hono on a more recent version, please try to deploy to 1.13.6 before
 raising an issue. You can use Minikube's `--kubernetes-version` command line switch to set a particular version.
 {{% /note %}}
 
@@ -97,7 +97,7 @@ With the next command we will use the provided [Azure Resource Manager (ARM)](ht
 ```bash
 unique_solution_prefix=myprefix
 cd deploy/src/main/deploy/azure/
-az group deployment create --name HonoBasicInfrastructure --resource-group $resourcegroup_name --template-file arm/honoInfrastructureDeployment.json --parameters uniqueSolutionPrefix=$unique_solution_prefix servicePrincipalObjectId=$object_id_principal servicePrincipalClientId=$app_id_principal servicePrincipalClientSecret=$password_principal
+az group deployment create --name HonoBasicInfrastructure --resource-group $resourcegroup_name --template-file arm/honoInfrastructureDeployment.json --parameters uniqueSolutionPrefix=$unique_solution_prefix servicePrincipalObjectId=$object_id_principal servicePrincipalClientId=$app_id_principal servicePrincipalClientSecret=$password_principal serviceBus=true serviceBusSku
 ```
 
 Note: add the following parameter in case you want to opt for the Azure Service Bus as broker in the [Eclipse Hono™ AMQP 1.0 Messaging Network](https://www.eclipse.org/hono/docs/architecture/component-view/component-view/#amqp-1-0-messaging-network) instead of deploying a (self-hosted) ActiveMQ Artemis into AKS: _serviceBus=true_
@@ -105,6 +105,7 @@ Note: add the following parameter in case you want to opt for the Azure Service 
 After the deployment is complete you can set your cluster in _kubectl_.
 
 ```bash
+aks_cluster_name=`az group deployment show --name HonoBasicInfrastructure --resource-group $resourcegroup_name --query properties.outputs.aksClusterName.value -o tsv`
 az aks get-credentials --resource-group $resourcegroup_name --name $aks_cluster_name
 ```
 
@@ -116,7 +117,7 @@ helm init --service-account tiller
 kubectl apply -f managed-premium-retain.yaml
 ```
 
-Now wait until the Azure deployment is complete and then continue with the [Helm deployment](helm-based-deployment/) of Eclipse Hono™  itself.
+Now wait until the Azure deployment is complete and then continue with the [Helm deployment](helm-based-deployment/) of Eclipse Hono™ itself.
 
 ### Monitoring
 

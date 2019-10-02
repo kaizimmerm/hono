@@ -19,7 +19,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
-
 import org.apache.qpid.proton.amqp.messaging.Rejected;
 import org.apache.qpid.proton.amqp.transport.ErrorCondition;
 import org.eclipse.hono.auth.Device;
@@ -34,9 +33,9 @@ import org.eclipse.hono.client.HonoConnection;
 import org.eclipse.hono.client.MessageConsumer;
 import org.eclipse.hono.client.ResourceConflictException;
 import org.eclipse.hono.tracing.TracingHelper;
+import org.eclipse.hono.util.CommandConstants;
 import org.eclipse.hono.util.Constants;
 import org.eclipse.hono.util.ResourceIdentifier;
-
 import io.opentracing.Span;
 import io.opentracing.SpanContext;
 import io.vertx.core.AsyncResult;
@@ -64,22 +63,25 @@ public class CommandConsumerFactoryImpl extends AbstractHonoClientFactory implem
      */
     public static final long MIN_LIVENESS_CHECK_INTERVAL_MILLIS = 2000;
 
-    private final CachingClientFactory<MessageConsumer> deviceSpecificCommandConsumerFactory;
-
-    private final CachingClientFactory<MessageConsumer> tenantScopedCommandConsumerFactory;
-
-    private final CachingClientFactory<DelegatedCommandSender> delegatedCommandSenderFactory;
     /**
      * The handlers for the received command messages.
      * The device address is used as the key, e.g. <em>DEFAULT_TENANT/4711</em>.
      */
-    private final Map<String, Handler<CommandContext>> deviceSpecificCommandHandlers = new HashMap<>();
+    protected final Map<String, Handler<CommandContext>> deviceSpecificCommandHandlers = new HashMap<>();
+
+    protected final CachingClientFactory<MessageConsumer> tenantScopedCommandConsumerFactory;
+
+    protected final CachingClientFactory<DelegatedCommandSender> delegatedCommandSenderFactory;
+
+    protected final GatewayMapper gatewayMapper;
+
+    protected final CachingClientFactory<MessageConsumer> deviceSpecificCommandConsumerFactory;
+
     /**
      * A mapping of command consumer addresses to vert.x timer IDs which represent the
      * liveness checks for the consumers.
      */
-    private final Map<String, Long> livenessChecks = new HashMap<>();
-    private final GatewayMapper gatewayMapper;
+    protected final Map<String, Long> livenessChecks = new HashMap<>();
 
     /**
      * Creates a new factory for an existing connection.
@@ -87,7 +89,7 @@ public class CommandConsumerFactoryImpl extends AbstractHonoClientFactory implem
      * Note: The connection lifecycle of the given {@link GatewayMapper} instance will be managed by this
      * <em>CommandConsumerFactoryImpl</em> instance via the {@link ConnectionLifecycle#connect()} and
      * {@link ConnectionLifecycle#disconnect()} methods.
-     * 
+     *
      * @param connection The connection to the AMQP network.
      * @param gatewayMapper The component mapping a command device id to the corresponding gateway device id.
      * @throws NullPointerException if connection or gatewayMapper is {@code null}.
@@ -107,7 +109,7 @@ public class CommandConsumerFactoryImpl extends AbstractHonoClientFactory implem
         deviceSpecificCommandHandlers.clear();
     }
 
-    private String getKey(final String tenantId, final String deviceId) {
+    protected String getKey(final String tenantId, final String deviceId) {
         return Device.asAddress(tenantId, deviceId);
     }
 
@@ -115,7 +117,7 @@ public class CommandConsumerFactoryImpl extends AbstractHonoClientFactory implem
      * {@inheritDoc}
      */
     @Override
-    public final Future<MessageConsumer> createCommandConsumer(
+    public Future<MessageConsumer> createCommandConsumer(
             final String tenantId,
             final String deviceId,
             final Handler<CommandContext> commandHandler,
@@ -148,44 +150,48 @@ public class CommandConsumerFactoryImpl extends AbstractHonoClientFactory implem
         });
     }
 
-    private Future<MessageConsumer> getOrCreateTenantScopedCommandConsumer(final String tenantId) {
+    protected Future<MessageConsumer> getOrCreateTenantScopedCommandConsumer(final String tenantId) {
         Objects.requireNonNull(tenantId);
         return connection.executeOrRunOnContext(result -> {
             final MessageConsumer messageConsumer = tenantScopedCommandConsumerFactory.getClient(tenantId);
             if (messageConsumer != null) {
                 result.complete(messageConsumer);
             } else {
+                final DelegateViaDownstreamPeerCommandHandler delegatingCommandHandler = new DelegateViaDownstreamPeerCommandHandler(
+                        (tenantIdParam, deviceIdParam) -> createDelegatedCommandSender(tenantIdParam, deviceIdParam));
+
+                final GatewayMappingCommandHandler gatewayMappingCommandHandler = new GatewayMappingCommandHandler(
+                        gatewayMapper, commandContext -> {
+                            final String deviceId = commandContext.getCommand().getDeviceId();
+                            final Handler<CommandContext> commandHandler = deviceSpecificCommandHandlers
+                                    .get(getKey(tenantId, deviceId));
+                            if (commandHandler != null) {
+                                log.trace("use local command handler for device {}", deviceId);
+                                commandHandler.handle(commandContext);
+                            } else {
+                                // delegate to matching consumer via downstream peer
+                                delegatingCommandHandler.handle(commandContext);
+                            }
+                        });
+
                 tenantScopedCommandConsumerFactory.getOrCreateClient(tenantId,
-                        () -> newTenantScopedCommandConsumer(tenantId),
+                        () -> newTenantScopedCommandConsumer(tenantId, gatewayMappingCommandHandler),
                         result);
             }
         });
     }
 
-    private Future<MessageConsumer> newTenantScopedCommandConsumer(final String tenantId) {
+    protected String getCommandRequestAddress(final String tenantId) {
+      return String.format("%s/%s", CommandConstants.NORTHBOUND_COMMAND_REQUEST_ENDPOINT, tenantId);
+    }
+
+    protected Future<MessageConsumer> newTenantScopedCommandConsumer(final String tenantId, final GatewayMappingCommandHandler gatewayMappingCommandHandler) {
 
         final AtomicReference<ProtonReceiver> receiverRefHolder = new AtomicReference<>();
 
-        final DelegateViaDownstreamPeerCommandHandler delegatingCommandHandler = new DelegateViaDownstreamPeerCommandHandler(
-                (tenantIdParam, deviceIdParam) -> createDelegatedCommandSender(tenantIdParam, deviceIdParam));
-
-        final GatewayMappingCommandHandler gatewayMappingCommandHandler = new GatewayMappingCommandHandler(
-                gatewayMapper, commandContext -> {
-                    final String deviceId = commandContext.getCommand().getDeviceId();
-                    final Handler<CommandContext> commandHandler = deviceSpecificCommandHandlers
-                            .get(getKey(tenantId, deviceId));
-                    if (commandHandler != null) {
-                        log.trace("use local command handler for device {}", deviceId);
-                        commandHandler.handle(commandContext);
-                    } else {
-                        // delegate to matching consumer via downstream peer
-                        delegatingCommandHandler.handle(commandContext);
-                    }
-                });
-
         return TenantScopedCommandConsumer.create(
                 connection,
-                tenantId,
+                getCommandRequestAddress(tenantId),
                 (originalMessageDelivery, message) -> {
                     final String deviceId = message.getAddress() != null ? ResourceIdentifier.fromString(message.getAddress()).getResourceId() : null;
                     if (deviceId == null) {
@@ -223,7 +229,7 @@ public class CommandConsumerFactoryImpl extends AbstractHonoClientFactory implem
                 .map(c -> (MessageConsumer) c);
     }
 
-    private Future<DelegatedCommandSender> createDelegatedCommandSender(final String tenantId, final String deviceId) {
+    protected Future<DelegatedCommandSender> createDelegatedCommandSender(final String tenantId, final String deviceId) {
         Objects.requireNonNull(tenantId);
         return connection.executeOrRunOnContext(result -> {
             delegatedCommandSenderFactory.createClient(
@@ -236,7 +242,7 @@ public class CommandConsumerFactoryImpl extends AbstractHonoClientFactory implem
      * <p>
      * The interval used for creating the periodic liveness check will be the maximum
      * of the given interval length and {@link #MIN_LIVENESS_CHECK_INTERVAL_MILLIS}.
-     * 
+     *
      */
     @Override
     public final Future<MessageConsumer> createCommandConsumer(
@@ -333,7 +339,7 @@ public class CommandConsumerFactoryImpl extends AbstractHonoClientFactory implem
         };
     }
 
-    private Future<MessageConsumer> newDeviceSpecificCommandConsumer(
+    protected Future<MessageConsumer> newDeviceSpecificCommandConsumer(
             final String tenantId,
             final String deviceId,
             final Handler<CommandContext> commandHandler,
@@ -360,7 +366,7 @@ public class CommandConsumerFactoryImpl extends AbstractHonoClientFactory implem
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * This implementation always creates a new sender link.
      */
     @Override

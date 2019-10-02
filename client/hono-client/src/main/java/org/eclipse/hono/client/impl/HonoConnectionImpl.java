@@ -24,10 +24,8 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-
 import javax.net.ssl.SSLException;
 import javax.security.sasl.AuthenticationException;
-
 import org.apache.qpid.proton.amqp.Symbol;
 import org.apache.qpid.proton.amqp.transport.ErrorCondition;
 import org.eclipse.hono.client.ClientErrorException;
@@ -43,7 +41,6 @@ import org.eclipse.hono.util.HonoProtonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import io.opentracing.Tracer;
 import io.opentracing.noop.NoopTracerFactory;
 import io.vertx.core.AsyncResult;
@@ -171,7 +168,7 @@ public class HonoConnectionImpl implements HonoConnection {
      * <p>
      * If not set explicitly, the {@code NoopTracer} from OpenTracing will
      * be used.
-     * 
+     *
      * @param opentracingTracer The tracer.
      */
     @Autowired(required = false)
@@ -183,7 +180,7 @@ public class HonoConnectionImpl implements HonoConnection {
     /**
      * Gets the OpenTracing {@code Tracer} to use for tracing the processing
      * of messages received from or sent to devices.
-     * 
+     *
      * @return The tracer.
      */
     @Override
@@ -209,7 +206,7 @@ public class HonoConnectionImpl implements HonoConnection {
     /**
      * Executes some code on the vert.x Context that has been used to establish the
      * connection to the peer.
-     * 
+     *
      * @param <T> The type of the result that the code produces.
      * @param codeToRun The code to execute. The code is required to either complete or
      *                  fail the future that is passed into the handler.
@@ -263,7 +260,7 @@ public class HonoConnectionImpl implements HonoConnection {
      * Note that the result returned by this method is only meaningful
      * if running on the vert.x event loop context that this client has been
      * created on.
-     * 
+     *
      * @return {@code true} if the connection is established.
      */
     protected boolean isConnectedInternal() {
@@ -516,7 +513,7 @@ public class HonoConnectionImpl implements HonoConnection {
 
     /**
      * Log the connection error.
-     * 
+     *
      * @param connectionFailureCause The connection error to log, never is {@code null}.
      */
     private void logConnectionError(final Throwable connectionFailureCause) {
@@ -564,7 +561,7 @@ public class HonoConnectionImpl implements HonoConnection {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * This method simply invokes {@link HonoProtonHelper#closeAndFree(Context, ProtonLink, Handler)}
      * with this connection's vert.x context.
      *
@@ -582,7 +579,7 @@ public class HonoConnectionImpl implements HonoConnection {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * This method simply invokes {@link HonoProtonHelper#closeAndFree(Context, ProtonLink, long, Handler)}
      * with this connection's vert.x context.
      */
@@ -597,7 +594,7 @@ public class HonoConnectionImpl implements HonoConnection {
 
     /**
      * Creates a sender link.
-     * 
+     *
      * @param targetAddress The target address of the link.
      * @param qos The quality of service to use for the link.
      * @param closeHook The handler to invoke when the link is closed by the peer (may be {@code null}).
@@ -783,7 +780,7 @@ public class HonoConnectionImpl implements HonoConnection {
         });
     }
 
-    private void onTimeOut(
+    protected void onTimeOut(
             final ProtonLink<?> link,
             final ClientConfigProperties clientConfig,
             final Future<?> result) {
@@ -797,7 +794,7 @@ public class HonoConnectionImpl implements HonoConnection {
         }
     }
 
-    private void onRemoteDetach(
+    protected void onRemoteDetach(
             final ProtonLink<?> link,
             final String remoteContainer,
             final boolean closed,

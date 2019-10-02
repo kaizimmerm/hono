@@ -15,7 +15,6 @@ package org.eclipse.hono.client.impl;
 
 import java.net.HttpURLConnection;
 import java.util.Objects;
-
 import org.apache.qpid.proton.amqp.transport.DeliveryState;
 import org.apache.qpid.proton.message.Message;
 import org.eclipse.hono.client.Command;
@@ -27,7 +26,6 @@ import org.eclipse.hono.config.ClientConfigProperties;
 import org.eclipse.hono.tracing.TracingHelper;
 import org.eclipse.hono.util.CommandConstants;
 import org.eclipse.hono.util.MessageHelper;
-
 import io.opentracing.Span;
 import io.opentracing.SpanContext;
 import io.opentracing.tag.Tags;
@@ -197,7 +195,7 @@ public class DelegatedCommandSenderImpl extends AbstractSender implements Delega
                 Objects.requireNonNull(deviceId));
     }
 
-    private static Message createDelegatedCommandMessage(final Message originalMessage, final String replyToAddress) {
+    protected static Message createDelegatedCommandMessage(final Message originalMessage, final String replyToAddress) {
         Objects.requireNonNull(originalMessage);
         // copy original message
         final Message msg = MessageHelper.getShallowCopy(originalMessage);

@@ -21,7 +21,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
-
 import org.apache.qpid.proton.amqp.messaging.Accepted;
 import org.apache.qpid.proton.amqp.messaging.ApplicationProperties;
 import org.apache.qpid.proton.amqp.messaging.Modified;
@@ -45,7 +44,6 @@ import org.eclipse.hono.util.RequestResponseResult;
 import org.eclipse.hono.util.TriTuple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import io.opentracing.Span;
 import io.opentracing.SpanContext;
 import io.opentracing.tag.Tags;
@@ -153,11 +151,11 @@ public abstract class AbstractRequestResponseClient<R extends RequestResponseRes
         super(connection);
         this.requestTimeoutMillis = connection.getConfig().getRequestTimeout();
         if (tenantId == null) {
-            this.linkTargetAddress = getName();
-            this.replyToAddress = String.format("%s/%s", getReplyToEndpointName(), replyId);
+            this.linkTargetAddress = getLinkTargetAddress();
+            this.replyToAddress = getReplyToAddress(replyId);
         } else {
-            this.linkTargetAddress = String.format("%s/%s", getName(), tenantId);
-            this.replyToAddress = String.format("%s/%s/%s", getReplyToEndpointName(), tenantId, replyId);
+            this.linkTargetAddress = getLinkTargetAddress(tenantId);
+            this.replyToAddress = getReplyToAddress(tenantId, replyId);
         }
         this.tenantId = tenantId;
     }
@@ -229,6 +227,23 @@ public abstract class AbstractRequestResponseClient<R extends RequestResponseRes
     public final void setResponseCache(final ExpiringValueCache<Object, R> cache) {
         this.responseCache = cache;
         LOG.info("enabling caching of responses from {}", getName());
+    }
+
+
+    protected String getReplyToAddress(final String tenantId, final String replyId) {
+      return String.format("%s/%s/%s", getReplyToEndpointName(), tenantId, replyId);
+    }
+
+    protected String getReplyToAddress(final String replyId) {
+      return String.format("%s/%s", getReplyToEndpointName(), replyId);
+    }
+
+    protected String getLinkTargetAddress(final String tenantId) {
+      return String.format("%s/%s", getLinkTargetAddress(), tenantId);
+    }
+
+    protected String getLinkTargetAddress() {
+      return getName();
     }
 
     /**
@@ -385,7 +400,7 @@ public abstract class AbstractRequestResponseClient<R extends RequestResponseRes
      *         have been created.
      * @throws NullPointerException if connection is {@code null}.
      */
-    protected final Future<Void> createLinks(final Handler<String> senderCloseHook,
+    protected Future<Void> createLinks(final Handler<String> senderCloseHook,
             final Handler<String> receiverCloseHook) {
 
         return createReceiver(replyToAddress, receiverCloseHook)
@@ -399,12 +414,12 @@ public abstract class AbstractRequestResponseClient<R extends RequestResponseRes
                 });
     }
 
-    private Future<ProtonSender> createSender(final String targetAddress, final Handler<String> closeHook) {
+    protected Future<ProtonSender> createSender(final String targetAddress, final Handler<String> closeHook) {
 
         return connection.createSender(targetAddress, ProtonQoS.AT_LEAST_ONCE, closeHook);
     }
 
-    private Future<ProtonReceiver> createReceiver(final String sourceAddress, final Handler<String> closeHook) {
+    protected Future<ProtonReceiver> createReceiver(final String sourceAddress, final Handler<String> closeHook) {
 
         return connection.createReceiver(sourceAddress, ProtonQoS.AT_LEAST_ONCE, this::handleResponse, closeHook);
     }

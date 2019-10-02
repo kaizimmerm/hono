@@ -14,7 +14,6 @@
 package org.eclipse.hono.client.impl;
 
 import java.net.HttpURLConnection;
-
 import org.apache.qpid.proton.amqp.transport.ErrorCondition;
 import org.eclipse.hono.client.Command;
 import org.eclipse.hono.client.CommandContext;
@@ -25,7 +24,6 @@ import org.eclipse.hono.util.CommandConstants;
 import org.eclipse.hono.util.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 
@@ -42,7 +40,7 @@ public class GatewayMappingCommandHandler implements Handler<CommandContext> {
 
     /**
      * Creates a new GatewayMappingCommandHandler instance.
-     * 
+     *
      * @param gatewayMapper The component mapping a command device id to the corresponding gateway device id.
      * @param nextCommandHandler The handler to invoke with the mapped command.
      */
@@ -76,8 +74,7 @@ public class GatewayMappingCommandHandler implements Handler<CommandContext> {
                     LOG.trace("determined mapped gateway {} for device {}", mappedGatewayId, originalDeviceId);
                     originalCommandContext.getCurrentSpan().log("determined mapped gateway " + mappedGatewayId);
                     if (!originalCommand.isOneWay()) {
-                        originalCommand.getCommandMessage().setReplyTo(String.format("%s/%s/%s",
-                                CommandConstants.NORTHBOUND_COMMAND_RESPONSE_ENDPOINT, tenantId, originalCommand.getReplyToId()));
+                        originalCommand.getCommandMessage().setReplyTo(getDelegatedReplyTo(originalCommand, tenantId));
                     }
                     final Command command = Command.from(originalCommand.getCommandMessage(), tenantId, mappedGatewayId);
                     commandContext = CommandContext.from(command, originalCommandContext.getDelivery(),
@@ -98,6 +95,11 @@ public class GatewayMappingCommandHandler implements Handler<CommandContext> {
                 originalCommandContext.release();
             }
         });
+    }
+
+    protected String getDelegatedReplyTo(final Command originalCommand, final String tenantId) {
+        return String.format("%s/%s/%s",
+            CommandConstants.NORTHBOUND_COMMAND_RESPONSE_ENDPOINT, tenantId, originalCommand.getReplyToId());
     }
 
 }

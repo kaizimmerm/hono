@@ -10,11 +10,9 @@
  * SPDX-License-Identifier: EPL-2.0
  */
 
-package org.eclipse.hono.client.azure;
+package org.eclipse.hono.client;
 
-import org.eclipse.hono.client.ApplicationClientFactory;
-import org.eclipse.hono.client.HonoConnection;
-import org.eclipse.hono.client.impl.ApplicationClientFactoryImpl;
+import org.eclipse.hono.client.impl.ServiceBusApplicationClientFactoryImpl;
 
 /**
  * A factory for creating clients for Hono's north bound APIs.
@@ -29,7 +27,7 @@ public interface AzureApplicationClientFactory extends ApplicationClientFactory 
    * @return The factory.
    * @throws NullPointerException if connection is {@code null}
    */
-  static ApplicationClientFactory create(final HonoConnection connection) {
-    return new ApplicationClientFactoryImpl(connection);
+  static ApplicationClientFactory create(final AzureHonoConnection connection) {
+    return new ServiceBusApplicationClientFactoryImpl(connection);
   }
 }

@@ -14,12 +14,12 @@
 package org.eclipse.hono.cli;
 
 import org.eclipse.hono.client.ApplicationClientFactory;
-import org.eclipse.hono.client.HonoConnection;
+import org.eclipse.hono.client.AzureApplicationClientFactory;
+import org.eclipse.hono.client.AzureHonoConnection;
 import org.eclipse.hono.config.ClientConfigProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
 import io.vertx.core.dns.AddressResolverOptions;
@@ -74,6 +74,6 @@ public class AppConfiguration {
      */
     @Bean
     public ApplicationClientFactory clientFactory() {
-        return ApplicationClientFactory.create(HonoConnection.newConnection(vertx(), honoClientConfig()));
+        return AzureApplicationClientFactory.create(AzureHonoConnection.newConnection(vertx(), honoClientConfig()));
     }
 }

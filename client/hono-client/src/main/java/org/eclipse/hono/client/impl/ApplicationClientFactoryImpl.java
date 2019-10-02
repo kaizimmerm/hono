@@ -18,7 +18,6 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-
 import org.apache.qpid.proton.message.Message;
 import org.eclipse.hono.client.ApplicationClientFactory;
 import org.eclipse.hono.client.AsyncCommandClient;
@@ -26,7 +25,6 @@ import org.eclipse.hono.client.CommandClient;
 import org.eclipse.hono.client.HonoConnection;
 import org.eclipse.hono.client.MessageConsumer;
 import org.eclipse.hono.util.CommandConstants;
-
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.proton.ProtonDelivery;
@@ -38,13 +36,13 @@ import io.vertx.proton.ProtonDelivery;
  */
 public class ApplicationClientFactoryImpl extends AbstractHonoClientFactory implements ApplicationClientFactory {
 
+    protected final CachingClientFactory<CommandClient> commandClientFactory;
     private final ClientFactory<MessageConsumer> consumerFactory;
-    private final CachingClientFactory<CommandClient> commandClientFactory;
     private final CachingClientFactory<AsyncCommandClient> asyncCommandClientFactory;
 
     /**
      * Creates a new factory for an existing connection.
-     * 
+     *
      * @param connection The connection to use.
      */
     public ApplicationClientFactoryImpl(final HonoConnection connection) {
@@ -129,7 +127,7 @@ public class ApplicationClientFactoryImpl extends AbstractHonoClientFactory impl
         return getOrCreateCommandClient(tenantId, replyId, cacheKey);
     }
 
-    private Future<CommandClient> getOrCreateCommandClient(final String tenantId, final String replyId,
+    protected Future<CommandClient> getOrCreateCommandClient(final String tenantId, final String replyId,
             final String cacheKey) {
         log.debug("get or create command client for [tenantId: {}, replyId: {}]", tenantId, replyId);
         return connection.executeOrRunOnContext(result -> {
@@ -145,7 +143,7 @@ public class ApplicationClientFactoryImpl extends AbstractHonoClientFactory impl
         });
     }
 
-    private void removeCommandClient(final String key) {
+    protected void removeCommandClient(final String key) {
         commandClientFactory.removeClient(key, client -> {
             client.close(s -> {});
             log.debug("closed and removed client for [{}]", key);
