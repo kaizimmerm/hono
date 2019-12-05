@@ -208,6 +208,7 @@
     <module>core</module>
     <module>cli</module>
     <module>client</module>
+    <module>kafka-client</module>
     <module>demo-certs</module>
     <module>deploy</module>
     <module>example</module>
