@@ -22,7 +22,6 @@ import org.apache.qpid.proton.amqp.messaging.ApplicationProperties;
 import org.eclipse.hono.cache.CacheProvider;
 import org.eclipse.hono.client.ClientErrorException;
 import org.eclipse.hono.client.CredentialsClient;
-import org.eclipse.hono.client.HonoConnection;
 import org.eclipse.hono.client.StatusCodeMapper;
 import org.eclipse.hono.util.CacheDirective;
 import org.eclipse.hono.util.CredentialsConstants;
@@ -67,7 +66,7 @@ public class CredentialsClientImpl extends AbstractRequestResponseClient<Credent
      * @param connection The connection to Hono.
      * @param tenantId The identifier of the tenant for which the client should be created.
      */
-    CredentialsClientImpl(final HonoConnection connection, final String tenantId) {
+    CredentialsClientImpl(final AmqpHonoConnection connection, final String tenantId) {
         super(connection, tenantId);
     }
 
@@ -79,7 +78,7 @@ public class CredentialsClientImpl extends AbstractRequestResponseClient<Credent
      * @param sender The AMQP link to use for sending requests to the service.
      * @param receiver The AMQP link to use for receiving responses from the service.
      */
-    CredentialsClientImpl(final HonoConnection connection, final String tenantId, final ProtonSender sender,
+    CredentialsClientImpl(final AmqpHonoConnection connection, final String tenantId, final ProtonSender sender,
             final ProtonReceiver receiver) {
         super(connection, tenantId, sender, receiver);
     }
@@ -143,9 +142,9 @@ public class CredentialsClientImpl extends AbstractRequestResponseClient<Credent
      * @return A future indicating the outcome of the creation attempt.
      * @throws NullPointerException if any of the parameters is {@code null}.
      */
-    public static final Future<CredentialsClient> create(
+    static final Future<CredentialsClient> create(
             final CacheProvider cacheProvider,
-            final HonoConnection con,
+            final AmqpHonoConnection con,
             final String tenantId,
             final Handler<String> senderCloseHook,
             final Handler<String> receiverCloseHook) {

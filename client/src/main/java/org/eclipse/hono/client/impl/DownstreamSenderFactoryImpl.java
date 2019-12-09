@@ -15,10 +15,8 @@
 package org.eclipse.hono.client.impl;
 
 import java.util.Objects;
-
 import org.eclipse.hono.client.DownstreamSender;
 import org.eclipse.hono.client.DownstreamSenderFactory;
-import org.eclipse.hono.client.HonoConnection;
 import org.eclipse.hono.util.Constants;
 
 import io.vertx.core.Future;
@@ -36,7 +34,7 @@ public class DownstreamSenderFactoryImpl extends AbstractHonoClientFactory imple
     /**
      * @param connection The connection to use.
      */
-    public DownstreamSenderFactoryImpl(final HonoConnection connection) {
+    public DownstreamSenderFactoryImpl(final AmqpHonoConnection connection) {
         super(connection);
         clientFactory = new CachingClientFactory<>(connection.getVertx(), s -> s.isOpen());
         connection.getVertx().eventBus().consumer(Constants.EVENT_BUS_ADDRESS_TENANT_TIMED_OUT,

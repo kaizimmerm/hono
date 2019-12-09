@@ -14,6 +14,7 @@
 
 package org.eclipse.hono.client;
 
+import org.eclipse.hono.client.impl.AmqpHonoConnection;
 import org.eclipse.hono.client.impl.DownstreamSenderFactoryImpl;
 
 import io.vertx.core.Future;
@@ -32,7 +33,11 @@ public interface DownstreamSenderFactory extends ConnectionLifecycle<HonoConnect
      * @throws NullPointerException if connection is {@code null}
      */
     static DownstreamSenderFactory create(final HonoConnection connection) {
-        return new DownstreamSenderFactoryImpl(connection);
+        if (connection instanceof AmqpHonoConnection) {
+          return new DownstreamSenderFactoryImpl((AmqpHonoConnection) connection);
+        }
+
+        return null;
     }
 
     /**

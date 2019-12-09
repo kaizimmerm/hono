@@ -15,7 +15,6 @@
 package org.eclipse.hono.client.impl;
 
 import java.util.Objects;
-
 import org.eclipse.hono.client.ConnectionLifecycle;
 import org.eclipse.hono.client.DisconnectListener;
 import org.eclipse.hono.client.HonoConnection;
@@ -40,13 +39,13 @@ abstract class AbstractHonoClientFactory implements ConnectionLifecycle<HonoConn
     /**
      * The connection to use for interacting with Hono.
      */
-    protected final HonoConnection connection;
+    protected final AmqpHonoConnection connection;
 
     /**
      * @param connection The connection to use.
      * @throws NullPointerException if connection is {@code null}.
      */
-    AbstractHonoClientFactory(final HonoConnection connection) {
+    AbstractHonoClientFactory(final AmqpHonoConnection connection) {
         this.connection = Objects.requireNonNull(connection);
         this.connection.addDisconnectListener(con -> onDisconnect());
     }

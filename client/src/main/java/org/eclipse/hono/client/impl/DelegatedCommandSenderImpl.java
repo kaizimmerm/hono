@@ -20,7 +20,6 @@ import org.apache.qpid.proton.amqp.transport.DeliveryState;
 import org.apache.qpid.proton.message.Message;
 import org.eclipse.hono.client.Command;
 import org.eclipse.hono.client.DelegatedCommandSender;
-import org.eclipse.hono.client.HonoConnection;
 import org.eclipse.hono.client.ServerErrorException;
 import org.eclipse.hono.client.ServiceInvocationException;
 import org.eclipse.hono.config.ClientConfigProperties;
@@ -45,7 +44,7 @@ import io.vertx.proton.ProtonSender;
 public class DelegatedCommandSenderImpl extends AbstractSender implements DelegatedCommandSender {
 
     DelegatedCommandSenderImpl(
-            final HonoConnection connection,
+            final AmqpHonoConnection connection,
             final ProtonSender sender) {
 
         super(connection, sender, "", "");
@@ -217,8 +216,8 @@ public class DelegatedCommandSenderImpl extends AbstractSender implements Delega
      * @return A future indicating the result of the creation attempt.
      * @throws NullPointerException if con is {@code null}.
      */
-    public static Future<DelegatedCommandSender> create(
-            final HonoConnection con,
+    static Future<DelegatedCommandSender> create(
+            final AmqpHonoConnection con,
             final String tenantId,
             final String deviceId,
             final Handler<String> closeHook) {

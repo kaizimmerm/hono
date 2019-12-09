@@ -17,7 +17,6 @@ import java.util.Objects;
 import org.apache.qpid.proton.message.Message;
 import org.eclipse.hono.client.CommandResponse;
 import org.eclipse.hono.client.CommandResponseSender;
-import org.eclipse.hono.client.HonoConnection;
 import org.eclipse.hono.config.ClientConfigProperties;
 import org.eclipse.hono.util.CommandConstants;
 
@@ -43,7 +42,7 @@ public class LegacyCommandResponseSenderImpl extends AbstractSender implements C
     public static final long DEFAULT_COMMAND_FLOW_LATENCY = 200L; // ms
 
     LegacyCommandResponseSenderImpl(
-            final HonoConnection connection,
+            final AmqpHonoConnection connection,
             final ProtonSender sender,
             final String tenantId,
             final String targetAddress) {
@@ -111,7 +110,7 @@ public class LegacyCommandResponseSenderImpl extends AbstractSender implements C
      * @throws NullPointerException if any of con, tenantId or replyId are {@code null}.
      */
     public static Future<CommandResponseSender> create(
-            final HonoConnection con,
+            final AmqpHonoConnection con,
             final String tenantId,
             final String replyId,
             final Handler<String> closeHook) {

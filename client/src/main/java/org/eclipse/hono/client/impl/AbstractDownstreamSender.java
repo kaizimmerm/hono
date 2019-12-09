@@ -23,7 +23,6 @@ import java.util.regex.Pattern;
 
 import org.apache.qpid.proton.message.Message;
 import org.eclipse.hono.client.DownstreamSender;
-import org.eclipse.hono.client.HonoConnection;
 import org.eclipse.hono.util.MessageHelper;
 
 import io.vertx.core.Future;
@@ -54,7 +53,7 @@ public abstract class AbstractDownstreamSender extends AbstractSender implements
      * @param targetAddress The target address to send the messages to.
      */
     protected AbstractDownstreamSender(
-            final HonoConnection connection,
+            final AmqpHonoConnection connection,
             final ProtonSender sender,
             final String tenantId,
             final String targetAddress) {

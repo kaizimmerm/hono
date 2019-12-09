@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.qpid.proton.message.Message;
-import org.eclipse.hono.client.HonoConnection;
 import org.eclipse.hono.client.RequestResponseClientConfigProperties;
 import org.eclipse.hono.config.ClientConfigProperties;
 import org.eclipse.hono.util.Constants;
@@ -64,7 +63,7 @@ public class CommandClientImplTest {
         receiver = HonoClientUnitTestHelper.mockProtonReceiver();
         sender = HonoClientUnitTestHelper.mockProtonSender();
         final ClientConfigProperties config = new RequestResponseClientConfigProperties();
-        final HonoConnection connection = HonoClientUnitTestHelper.mockHonoConnection(vertx, config);
+        final AmqpHonoConnection connection = HonoClientUnitTestHelper.mockHonoConnection(vertx, config);
         client = new CommandClientImpl(
                 connection,
                 Constants.DEFAULT_TENANT,

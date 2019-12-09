@@ -31,7 +31,6 @@ import org.apache.qpid.proton.amqp.transport.DeliveryState;
 import org.apache.qpid.proton.message.Message;
 import org.eclipse.hono.cache.ExpiringValueCache;
 import org.eclipse.hono.client.ClientErrorException;
-import org.eclipse.hono.client.HonoConnection;
 import org.eclipse.hono.client.RequestResponseClient;
 import org.eclipse.hono.client.RequestResponseClientConfigProperties;
 import org.eclipse.hono.client.ServerErrorException;
@@ -120,7 +119,7 @@ public abstract class AbstractRequestResponseClient<R extends RequestResponseRes
      * @throws NullPointerException if any of context or configuration are {@code null}.
      */
     protected AbstractRequestResponseClient(
-            final HonoConnection connection,
+            final AmqpHonoConnection connection,
             final String tenantId) {
 
         this(connection, tenantId, UUID.randomUUID().toString());
@@ -147,7 +146,7 @@ public abstract class AbstractRequestResponseClient<R extends RequestResponseRes
      * @throws NullPointerException if any of context or configuration are {@code null}.
      */
     protected AbstractRequestResponseClient(
-            final HonoConnection connection,
+            final AmqpHonoConnection connection,
             final String tenantId,
             final String replyId) {
 
@@ -185,7 +184,7 @@ public abstract class AbstractRequestResponseClient<R extends RequestResponseRes
      * @throws NullPointerException if any of the parameters other than tracer are {@code null}.
      */
     protected AbstractRequestResponseClient(
-            final HonoConnection connection,
+            final AmqpHonoConnection connection,
             final String tenantId,
             final String deviceId,
             final String replyId) {
@@ -212,7 +211,7 @@ public abstract class AbstractRequestResponseClient<R extends RequestResponseRes
      * @throws NullPointerException if any of the parameters other than tenant are {@code null}.
      */
     protected AbstractRequestResponseClient(
-            final HonoConnection connection,
+            final AmqpHonoConnection connection,
             final String tenantId,
             final ProtonSender sender,
             final ProtonReceiver receiver) {

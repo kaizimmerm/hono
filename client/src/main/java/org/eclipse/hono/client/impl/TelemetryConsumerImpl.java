@@ -17,7 +17,6 @@ import java.util.Objects;
 import java.util.function.Consumer;
 
 import org.apache.qpid.proton.message.Message;
-import org.eclipse.hono.client.HonoConnection;
 import org.eclipse.hono.client.MessageConsumer;
 import org.eclipse.hono.util.TelemetryConstants;
 
@@ -31,7 +30,7 @@ import io.vertx.proton.ProtonReceiver;
  */
 public class TelemetryConsumerImpl extends AbstractConsumer implements MessageConsumer {
 
-    private TelemetryConsumerImpl(final HonoConnection connection, final ProtonReceiver receiver) {
+    private TelemetryConsumerImpl(final AmqpHonoConnection connection, final ProtonReceiver receiver) {
         super(connection, receiver);
     }
 
@@ -45,8 +44,8 @@ public class TelemetryConsumerImpl extends AbstractConsumer implements MessageCo
      * @return A future indicating the outcome.
      * @throws NullPointerException if any of the parameters is {@code null}.
      */
-    public static Future<MessageConsumer> create(
-            final HonoConnection con,
+    static Future<MessageConsumer> create(
+            final AmqpHonoConnection con,
             final String tenantId,
             final Consumer<Message> telemetryConsumer,
             final Handler<String> closeHook ) {

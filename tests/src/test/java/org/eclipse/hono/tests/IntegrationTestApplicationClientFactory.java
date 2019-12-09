@@ -14,9 +14,8 @@
 package org.eclipse.hono.tests;
 
 import org.eclipse.hono.client.ApplicationClientFactory;
-import org.eclipse.hono.client.HonoConnection;
 import org.eclipse.hono.client.MessageSender;
-
+import org.eclipse.hono.client.impl.AmqpHonoConnection;
 import io.vertx.core.Future;
 
 /**
@@ -31,7 +30,7 @@ public interface IntegrationTestApplicationClientFactory extends ApplicationClie
      * @param connection The connection to Hono.
      * @return the factory.
      */
-    static IntegrationTestApplicationClientFactory create(final HonoConnection connection) {
+    static IntegrationTestApplicationClientFactory create(final AmqpHonoConnection connection) {
         return new IntegrationTestApplicationClientFactoryImpl(connection);
     }
 

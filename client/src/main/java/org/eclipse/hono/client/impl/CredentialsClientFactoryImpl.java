@@ -19,7 +19,6 @@ import java.util.Objects;
 import org.eclipse.hono.cache.CacheProvider;
 import org.eclipse.hono.client.CredentialsClient;
 import org.eclipse.hono.client.CredentialsClientFactory;
-import org.eclipse.hono.client.HonoConnection;
 import org.eclipse.hono.util.Constants;
 
 import io.vertx.core.Future;
@@ -43,7 +42,7 @@ public class CredentialsClientFactoryImpl extends AbstractHonoClientFactory impl
      * @param cacheProvider The cache provider to use for creating caches for credential objects
      *                      or {@code null} if credentials objects should not be cached.
      */
-    public CredentialsClientFactoryImpl(final HonoConnection connection, final CacheProvider cacheProvider) {
+    public CredentialsClientFactoryImpl(final AmqpHonoConnection connection, final CacheProvider cacheProvider) {
         super(connection);
         credentialsClientFactory = new CachingClientFactory<>(connection.getVertx(), c -> c.isOpen());
         this.cacheProvider = cacheProvider;

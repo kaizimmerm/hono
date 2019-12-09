@@ -14,6 +14,7 @@
 
 package org.eclipse.hono.client;
 
+import org.eclipse.hono.client.impl.AmqpHonoConnection;
 import org.eclipse.hono.client.impl.DeviceConnectionClientFactoryImpl;
 
 import io.vertx.core.Future;
@@ -32,7 +33,11 @@ public interface DeviceConnectionClientFactory extends ConnectionLifecycle<HonoC
      * @throws NullPointerException if connection is {@code null}
      */
     static DeviceConnectionClientFactory create(final HonoConnection connection) {
-        return new DeviceConnectionClientFactoryImpl(connection);
+        if (connection instanceof AmqpHonoConnection) {
+          return new DeviceConnectionClientFactoryImpl((AmqpHonoConnection) connection);
+        }
+
+        return null;
     }
 
     /**

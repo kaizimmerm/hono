@@ -17,7 +17,6 @@ import java.util.Objects;
 import java.util.function.BiConsumer;
 
 import org.apache.qpid.proton.message.Message;
-import org.eclipse.hono.client.HonoConnection;
 import org.eclipse.hono.client.MessageConsumer;
 import org.eclipse.hono.util.CommandConstants;
 
@@ -36,7 +35,7 @@ public class AsyncCommandResponseConsumerImpl extends AbstractConsumer implement
             + "/%s/%s";
 
     private AsyncCommandResponseConsumerImpl(
-            final HonoConnection con,
+            final AmqpHonoConnection con,
             final ProtonReceiver receiver) {
         super(con, receiver);
     }
@@ -53,7 +52,7 @@ public class AsyncCommandResponseConsumerImpl extends AbstractConsumer implement
      * @throws NullPointerException if any of the parameters except close hook are {@code null}.
      */
     public static Future<MessageConsumer> create(
-            final HonoConnection con,
+            final AmqpHonoConnection con,
             final String tenantId,
             final String replyId,
             final BiConsumer<ProtonDelivery, Message> asyncCommandResponseConsumer,

@@ -15,6 +15,7 @@
 package org.eclipse.hono.client;
 
 import org.eclipse.hono.cache.CacheProvider;
+import org.eclipse.hono.client.impl.AmqpHonoConnection;
 import org.eclipse.hono.client.impl.TenantClientFactoryImpl;
 
 import io.vertx.core.Future;
@@ -33,7 +34,11 @@ public interface TenantClientFactory extends ConnectionLifecycle<HonoConnection>
      * @throws NullPointerException if connection is {@code null}
      */
     static TenantClientFactory create(final HonoConnection connection) {
-        return new TenantClientFactoryImpl(connection, null);
+        if (connection instanceof AmqpHonoConnection) {
+          return new TenantClientFactoryImpl((AmqpHonoConnection) connection, null);
+        }
+
+        return null;
     }
 
     /**
@@ -46,7 +51,11 @@ public interface TenantClientFactory extends ConnectionLifecycle<HonoConnection>
      * @throws NullPointerException if connection is {@code null}
      */
     static TenantClientFactory create(final HonoConnection connection, final CacheProvider cacheProvider) {
-        return new TenantClientFactoryImpl(connection, cacheProvider);
+        if (connection instanceof AmqpHonoConnection) {
+          return new TenantClientFactoryImpl((AmqpHonoConnection) connection, cacheProvider);
+        }
+
+        return null;
     }
 
     /**

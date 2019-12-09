@@ -14,8 +14,6 @@
 package org.eclipse.hono.client.impl;
 
 import org.eclipse.hono.client.DeviceConnectionClient;
-import org.eclipse.hono.client.HonoConnection;
-
 import io.vertx.core.Future;
 
 /**
@@ -25,7 +23,7 @@ public class DeviceConnectionClientFactoryImplTest
         extends AbstractTenantTimeoutRelatedClientFactoryTest<DeviceConnectionClient> {
 
     @Override
-    protected Future<DeviceConnectionClient> getClientFuture(final HonoConnection connection, final String tenantId) {
+    protected Future<DeviceConnectionClient> getClientFuture(final AmqpHonoConnection connection, final String tenantId) {
         return new DeviceConnectionClientFactoryImpl(connection).getOrCreateDeviceConnectionClient(tenantId);
     }
 }

@@ -13,7 +13,6 @@
 
 package org.eclipse.hono.client.impl;
 
-import org.eclipse.hono.client.HonoConnection;
 import org.eclipse.hono.client.RegistrationClient;
 
 import io.vertx.core.Future;
@@ -25,7 +24,7 @@ public class RegistrationClientFactoryImplTest
         extends AbstractTenantTimeoutRelatedClientFactoryTest<RegistrationClient> {
 
     @Override
-    protected Future<RegistrationClient> getClientFuture(final HonoConnection connection, final String tenantId) {
+    protected Future<RegistrationClient> getClientFuture(final AmqpHonoConnection connection, final String tenantId) {
         return new RegistrationClientFactoryImpl(connection, null).getOrCreateRegistrationClient(tenantId);
     }
 }

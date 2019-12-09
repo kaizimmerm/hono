@@ -25,7 +25,6 @@ import javax.security.auth.x500.X500Principal;
 import org.apache.qpid.proton.amqp.messaging.ApplicationProperties;
 import org.eclipse.hono.cache.CacheProvider;
 import org.eclipse.hono.client.ClientErrorException;
-import org.eclipse.hono.client.HonoConnection;
 import org.eclipse.hono.client.StatusCodeMapper;
 import org.eclipse.hono.client.TenantClient;
 import org.eclipse.hono.util.CacheDirective;
@@ -72,7 +71,7 @@ public class TenantClientImpl extends AbstractRequestResponseClient<TenantResult
      * @param connection The connection to Hono.
      * @throws NullPointerException if any of the parameters are {@code null}.
      */
-    protected TenantClientImpl(final HonoConnection connection) {
+    protected TenantClientImpl(final AmqpHonoConnection connection) {
         super(connection, null);
     }
 
@@ -85,7 +84,7 @@ public class TenantClientImpl extends AbstractRequestResponseClient<TenantResult
      * @throws NullPointerException if any of the parameters is {@code null}.
      */
     protected TenantClientImpl(
-            final HonoConnection connection,
+            final AmqpHonoConnection connection,
             final ProtonSender sender,
             final ProtonReceiver receiver) {
 
@@ -148,9 +147,9 @@ public class TenantClientImpl extends AbstractRequestResponseClient<TenantResult
      * @return A future indicating the outcome of the creation attempt.
      * @throws NullPointerException if any of the parameters, except for senderCloseHook and receiverCloseHook are {@code null}.
      */
-    public static final Future<TenantClient> create(
+    static final Future<TenantClient> create(
             final CacheProvider cacheProvider,
-            final HonoConnection con,
+            final AmqpHonoConnection con,
             final Handler<String> senderCloseHook,
             final Handler<String> receiverCloseHook) {
 

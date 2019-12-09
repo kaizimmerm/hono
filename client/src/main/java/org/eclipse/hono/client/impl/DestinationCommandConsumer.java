@@ -23,7 +23,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.apache.qpid.proton.message.Message;
 import org.eclipse.hono.client.Command;
 import org.eclipse.hono.client.CommandContext;
-import org.eclipse.hono.client.HonoConnection;
 import org.eclipse.hono.client.ResourceConflictException;
 import org.eclipse.hono.tracing.TracingHelper;
 import org.eclipse.hono.util.CommandConstants;
@@ -63,7 +62,7 @@ public final class DestinationCommandConsumer extends CommandConsumer {
     private final String gatewayOrDeviceId;
     private final AtomicBoolean closedCalled = new AtomicBoolean();
 
-    private DestinationCommandConsumer(final HonoConnection connection, final ProtonReceiver receiver,
+    private DestinationCommandConsumer(final AmqpHonoConnection connection, final ProtonReceiver receiver,
             final String tenantId, final String gatewayOrDeviceId) {
         super(connection, receiver);
         this.tenantId = tenantId;
@@ -266,8 +265,8 @@ public final class DestinationCommandConsumer extends CommandConsumer {
      * @return A future indicating the outcome of the creation attempt.
      * @throws NullPointerException if any of the parameters are {@code null}.
      */
-    public static Future<DestinationCommandConsumer> create(
-            final HonoConnection con,
+    static Future<DestinationCommandConsumer> create(
+            final AmqpHonoConnection con,
             final String tenantId,
             final String gatewayOrDeviceId,
             final Handler<String> localCloseHandler,

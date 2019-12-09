@@ -13,6 +13,7 @@
 
 package org.eclipse.hono.client;
 
+import org.eclipse.hono.client.impl.AmqpHonoConnection;
 import org.eclipse.hono.client.impl.CommandConsumer;
 import org.eclipse.hono.client.impl.CommandConsumerFactoryImpl;
 
@@ -34,7 +35,11 @@ public interface CommandConsumerFactory extends ConnectionLifecycle<HonoConnecti
      * @throws NullPointerException if connection or gatewayMapper is {@code null}.
      */
     static CommandConsumerFactory create(final HonoConnection connection, final GatewayMapper gatewayMapper) {
-        return new CommandConsumerFactoryImpl(connection, gatewayMapper);
+        if (connection instanceof AmqpHonoConnection) {
+          return new CommandConsumerFactoryImpl((AmqpHonoConnection) connection, gatewayMapper);
+        }
+
+        return null;
     }
 
     /**

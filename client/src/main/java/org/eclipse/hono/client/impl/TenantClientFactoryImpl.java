@@ -15,7 +15,6 @@
 package org.eclipse.hono.client.impl;
 
 import org.eclipse.hono.cache.CacheProvider;
-import org.eclipse.hono.client.HonoConnection;
 import org.eclipse.hono.client.TenantClient;
 import org.eclipse.hono.client.TenantClientFactory;
 
@@ -39,7 +38,7 @@ public class TenantClientFactoryImpl extends AbstractHonoClientFactory implement
      *                      or {@code null} if tenant objects should not be cached.
      * @throws NullPointerException if connection is {@code null}
      */
-    public TenantClientFactoryImpl(final HonoConnection connection, final CacheProvider cacheProvider) {
+    public TenantClientFactoryImpl(final AmqpHonoConnection connection, final CacheProvider cacheProvider) {
         super(connection);
         this.tenantClientFactory = new CachingClientFactory<>(connection.getVertx(), c -> c.isOpen());
         this.cacheProvider = cacheProvider;

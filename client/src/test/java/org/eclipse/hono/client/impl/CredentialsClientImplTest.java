@@ -28,7 +28,6 @@ import io.vertx.core.Future;
 import org.apache.qpid.proton.amqp.messaging.Rejected;
 import org.apache.qpid.proton.message.Message;
 import org.eclipse.hono.cache.ExpiringValueCache;
-import org.eclipse.hono.client.HonoConnection;
 import org.eclipse.hono.client.RequestResponseClientConfigProperties;
 import org.eclipse.hono.client.ServiceInvocationException;
 import org.eclipse.hono.util.CacheDirective;
@@ -85,7 +84,7 @@ public class CredentialsClientImplTest {
         tracer = mock(Tracer.class);
         when(tracer.buildSpan(anyString())).thenReturn(spanBuilder);
 
-        final HonoConnection connection = HonoClientUnitTestHelper.mockHonoConnection(mock(Vertx.class),
+        final AmqpHonoConnection connection = HonoClientUnitTestHelper.mockHonoConnection(mock(Vertx.class),
                 new RequestResponseClientConfigProperties());
         when(connection.getTracer()).thenReturn(tracer);
 

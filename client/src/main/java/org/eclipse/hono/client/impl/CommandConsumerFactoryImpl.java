@@ -119,7 +119,7 @@ public class CommandConsumerFactoryImpl extends AbstractHonoClientFactory implem
      * @param gatewayMapper The component mapping a command device id to the corresponding gateway device id.
      * @throws NullPointerException if connection or gatewayMapper is {@code null}.
      */
-    public CommandConsumerFactoryImpl(final HonoConnection connection, final GatewayMapper gatewayMapper) {
+    public CommandConsumerFactoryImpl(final AmqpHonoConnection connection, final GatewayMapper gatewayMapper) {
         super(connection);
         this.gatewayMapper = Objects.requireNonNull(gatewayMapper);
         destinationCommandConsumerFactory = new CachingClientFactory<>(connection.getVertx(), c -> c.isAlive());

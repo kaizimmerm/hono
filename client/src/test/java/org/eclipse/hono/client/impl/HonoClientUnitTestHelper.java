@@ -21,7 +21,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import org.apache.qpid.proton.amqp.transport.Target;
-import org.eclipse.hono.client.HonoConnection;
 import org.eclipse.hono.config.ClientConfigProperties;
 import org.mockito.Mockito;
 
@@ -123,7 +122,7 @@ public final class HonoClientUnitTestHelper {
      * @param vertx The vert.x instance to use.
      * @return The connection.
      */
-    public static HonoConnection mockHonoConnection(final Vertx vertx) {
+    public static AmqpHonoConnection mockHonoConnection(final Vertx vertx) {
         return mockHonoConnection(vertx, new ClientConfigProperties());
     }
 
@@ -135,10 +134,10 @@ public final class HonoClientUnitTestHelper {
      * @param props The client properties to use.
      * @return The connection.
      */
-    public static HonoConnection mockHonoConnection(final Vertx vertx, final ClientConfigProperties props) {
+    public static AmqpHonoConnection mockHonoConnection(final Vertx vertx, final ClientConfigProperties props) {
 
         final Tracer tracer = NoopTracerFactory.create();
-        final HonoConnection connection = mock(HonoConnection.class);
+        final AmqpHonoConnection connection = mock(AmqpHonoConnection.class);
         when(connection.getVertx()).thenReturn(vertx);
         when(connection.getConfig()).thenReturn(props);
         when(connection.getTracer()).thenReturn(tracer);

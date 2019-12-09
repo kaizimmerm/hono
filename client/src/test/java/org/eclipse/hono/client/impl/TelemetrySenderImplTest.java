@@ -28,7 +28,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.apache.qpid.proton.amqp.messaging.Rejected;
 import org.apache.qpid.proton.message.Message;
 import org.eclipse.hono.client.DownstreamSender;
-import org.eclipse.hono.client.HonoConnection;
 import org.eclipse.hono.config.ClientConfigProperties;
 import org.junit.Before;
 import org.junit.Test;
@@ -54,7 +53,7 @@ public class TelemetrySenderImplTest {
     private Vertx vertx;
     private ProtonSender sender;
     private ClientConfigProperties config;
-    private HonoConnection connection;
+    private AmqpHonoConnection connection;
 
     /**
      * Sets up the fixture.

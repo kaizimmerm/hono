@@ -76,7 +76,7 @@ public class CommandConsumerFactoryImplTest {
     private Vertx vertx;
     private Context context;
     private ClientConfigProperties props;
-    private HonoConnection connection;
+    private AmqpHonoConnection connection;
     private CommandConsumerFactoryImpl commandConsumerFactory;
     private GatewayMapper gatewayMapper;
     private ProtonReceiver deviceSpecificCommandReceiver;

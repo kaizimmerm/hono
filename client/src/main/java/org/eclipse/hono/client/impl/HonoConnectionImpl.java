@@ -78,7 +78,7 @@ import io.vertx.proton.sasl.SaslSystemException;
  * invocation of any of the connect methods will then use the same approach as
  * described above to determine the Context to use.
  */
-public class HonoConnectionImpl implements HonoConnection {
+public class HonoConnectionImpl implements AmqpHonoConnection {
 
     /**
      * A logger to be shared with subclasses.

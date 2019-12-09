@@ -18,7 +18,6 @@ import java.util.Objects;
 
 import org.apache.qpid.proton.message.Message;
 import org.eclipse.hono.client.AsyncCommandClient;
-import org.eclipse.hono.client.HonoConnection;
 import org.eclipse.hono.util.CommandConstants;
 import org.eclipse.hono.util.MessageHelper;
 
@@ -39,7 +38,7 @@ import io.vertx.proton.ProtonSender;
 public class AsyncCommandClientImpl extends AbstractSender implements AsyncCommandClient {
 
     private AsyncCommandClientImpl(
-            final HonoConnection con,
+            final AmqpHonoConnection con,
             final ProtonSender sender,
             final String tenantId,
             final String targetAddress) {
@@ -136,8 +135,8 @@ public class AsyncCommandClientImpl extends AbstractSender implements AsyncComma
      * @return A future indicating the outcome.
      * @throws NullPointerException if any of connection, tenantId or deviceId are {@code null}.
      */
-    public static Future<AsyncCommandClient> create(
-            final HonoConnection con,
+    static Future<AsyncCommandClient> create(
+            final AmqpHonoConnection con,
             final String tenantId,
             final Handler<String> closeHook) {
 

@@ -14,9 +14,7 @@ package org.eclipse.hono.client.impl;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.eclipse.hono.client.Command;
-import org.eclipse.hono.client.HonoConnection;
 import org.eclipse.hono.tracing.TracingHelper;
 import org.eclipse.hono.util.MessageHelper;
 
@@ -39,7 +37,7 @@ public abstract class CommandConsumer extends AbstractConsumer {
      *                   commands are received.
      * @param receiver The receiver link for command messages.
      */
-    protected CommandConsumer(final HonoConnection connection, final ProtonReceiver receiver) {
+    protected CommandConsumer(final AmqpHonoConnection connection, final ProtonReceiver receiver) {
         super(connection, receiver);
     }
 

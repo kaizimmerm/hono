@@ -19,7 +19,6 @@ import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.eclipse.hono.client.HonoConnection;
 import org.eclipse.hono.util.Constants;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,7 +48,7 @@ public abstract class AbstractTenantTimeoutRelatedClientFactoryTest<T> {
      * @param tenantId The tenant of the client.
      * @return The future with the client.
      */
-    protected abstract Future<T> getClientFuture(HonoConnection connection, String tenantId);
+    protected abstract Future<T> getClientFuture(AmqpHonoConnection connection, String tenantId);
 
     /**
      * Verifies that the links are closed when a tenant timeout message is received for the tenant of this client.
@@ -62,7 +61,7 @@ public abstract class AbstractTenantTimeoutRelatedClientFactoryTest<T> {
         final String tenantId = "tenant";
 
         // GIVEN a client factory that manages a client with a tenant-scoped link
-        final HonoConnection connection = createConnection();
+        final AmqpHonoConnection connection = createConnection();
         final Future<T> clientFuture = getClientFuture(connection, tenantId);
 
         final Async async = ctx.async();
@@ -91,7 +90,7 @@ public abstract class AbstractTenantTimeoutRelatedClientFactoryTest<T> {
         final String otherTenant = "otherTenant";
 
         // GIVEN a client factory that manages a client with a tenant-scoped link
-        final HonoConnection connection = createConnection();
+        final AmqpHonoConnection connection = createConnection();
         final Future<T> clientFuture = getClientFuture(connection, tenantId);
 
         final Async async = ctx.async();
@@ -108,9 +107,9 @@ public abstract class AbstractTenantTimeoutRelatedClientFactoryTest<T> {
         async.await();
     }
 
-    private HonoConnection createConnection() {
+    private AmqpHonoConnection createConnection() {
         final Vertx vertx = Vertx.vertx();
-        final HonoConnection connection = HonoClientUnitTestHelper.mockHonoConnection(vertx);
+        final AmqpHonoConnection connection = HonoClientUnitTestHelper.mockHonoConnection(vertx);
         when(connection.getVertx()).thenReturn(vertx);
 
         final ProtonReceiver receiver = HonoClientUnitTestHelper.mockProtonReceiver();

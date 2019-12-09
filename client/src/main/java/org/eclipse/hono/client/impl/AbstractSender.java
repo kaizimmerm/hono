@@ -29,7 +29,6 @@ import org.apache.qpid.proton.amqp.messaging.Released;
 import org.apache.qpid.proton.amqp.transport.DeliveryState;
 import org.apache.qpid.proton.message.Message;
 import org.eclipse.hono.client.ClientErrorException;
-import org.eclipse.hono.client.HonoConnection;
 import org.eclipse.hono.client.MessageSender;
 import org.eclipse.hono.client.ServerErrorException;
 import org.eclipse.hono.client.ServiceInvocationException;
@@ -87,7 +86,7 @@ public abstract class AbstractSender extends AbstractHonoClient implements Messa
      * @param targetAddress The target address to send the messages to.
      */
     protected AbstractSender(
-            final HonoConnection connection,
+            final AmqpHonoConnection connection,
             final ProtonSender sender,
             final String tenantId,
             final String targetAddress) {

@@ -41,7 +41,6 @@ import org.apache.qpid.proton.amqp.messaging.Rejected;
 import org.apache.qpid.proton.amqp.transport.Target;
 import org.apache.qpid.proton.message.Message;
 import org.eclipse.hono.cache.ExpiringValueCache;
-import org.eclipse.hono.client.HonoConnection;
 import org.eclipse.hono.client.RequestResponseClientConfigProperties;
 import org.eclipse.hono.client.ServerErrorException;
 import org.eclipse.hono.client.ServiceInvocationException;
@@ -484,7 +483,7 @@ public class AbstractRequestResponseClientTest  {
 
     private AbstractRequestResponseClient<SimpleRequestResponseResult> getClient(final String tenant, final ProtonSender sender, final ProtonReceiver receiver) {
 
-        final HonoConnection connection = HonoClientUnitTestHelper.mockHonoConnection(vertx);
+        final AmqpHonoConnection connection = HonoClientUnitTestHelper.mockHonoConnection(vertx);
         return new AbstractRequestResponseClient<SimpleRequestResponseResult>(connection, tenant, sender, receiver) {
 
             @Override

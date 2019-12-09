@@ -28,7 +28,6 @@ import java.net.HttpURLConnection;
 
 import org.apache.qpid.proton.amqp.messaging.Rejected;
 import org.apache.qpid.proton.message.Message;
-import org.eclipse.hono.client.HonoConnection;
 import org.eclipse.hono.client.RequestResponseClientConfigProperties;
 import org.eclipse.hono.client.ServiceInvocationException;
 import org.eclipse.hono.util.CacheDirective;
@@ -68,7 +67,7 @@ public class DeviceConnectionClientImplTest {
     private DeviceConnectionClientImpl client;
     private Tracer tracer;
     private Span span;
-    private HonoConnection connection;
+    private AmqpHonoConnection connection;
 
     /**
      * Sets up the fixture.

@@ -29,7 +29,6 @@ import java.time.Duration;
 
 import org.apache.qpid.proton.message.Message;
 import org.eclipse.hono.cache.ExpiringValueCache;
-import org.eclipse.hono.client.HonoConnection;
 import org.eclipse.hono.client.RequestResponseClientConfigProperties;
 import org.eclipse.hono.util.CacheDirective;
 import org.eclipse.hono.util.MessageHelper;
@@ -68,7 +67,7 @@ public class RegistrationClientImplTest {
     private ExpiringValueCache<Object, RegistrationResult> cache;
     private Tracer tracer;
     private Span span;
-    private HonoConnection connection;
+    private AmqpHonoConnection connection;
 
     /**
      * Sets up the fixture.

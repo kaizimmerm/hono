@@ -18,6 +18,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import org.apache.qpid.proton.message.Message;
+import org.eclipse.hono.client.impl.AmqpHonoConnection;
 import org.eclipse.hono.client.impl.ApplicationClientFactoryImpl;
 
 import io.vertx.core.Future;
@@ -38,7 +39,11 @@ public interface ApplicationClientFactory extends ConnectionLifecycle<HonoConnec
      * @throws NullPointerException if connection is {@code null}
      */
     static ApplicationClientFactory create(final HonoConnection connection) {
-        return new ApplicationClientFactoryImpl(connection);
+        if (connection instanceof AmqpHonoConnection) {
+          return new ApplicationClientFactoryImpl((AmqpHonoConnection) connection);
+        }
+
+        return null;
     }
 
     /**

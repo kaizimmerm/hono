@@ -29,7 +29,6 @@ import static org.mockito.Mockito.when;
 import java.net.HttpURLConnection;
 
 import org.apache.qpid.proton.message.Message;
-import org.eclipse.hono.client.HonoConnection;
 import org.eclipse.hono.client.ServerErrorException;
 import org.eclipse.hono.util.MessageHelper;
 import org.junit.Before;
@@ -154,7 +153,7 @@ public class AbstractSenderTest {
 
     private AbstractSender newSender(final String tenantId, final String targetAddress) {
 
-        final HonoConnection connection = HonoClientUnitTestHelper.mockHonoConnection(vertx);
+        final AmqpHonoConnection connection = HonoClientUnitTestHelper.mockHonoConnection(vertx);
         return new AbstractSender(
                 connection,
                 protonSender,

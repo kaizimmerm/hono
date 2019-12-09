@@ -25,7 +25,6 @@ import java.util.function.BiConsumer;
 import org.apache.qpid.proton.amqp.messaging.Released;
 import org.apache.qpid.proton.amqp.transport.Source;
 import org.apache.qpid.proton.message.Message;
-import org.eclipse.hono.client.HonoConnection;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -60,7 +59,7 @@ public class EventConsumerImplTest {
     public Timeout timeout = Timeout.seconds(5);
 
     private Vertx vertx;
-    private HonoConnection connection;
+    private AmqpHonoConnection connection;
 
     /**
      * Initializes fixture.

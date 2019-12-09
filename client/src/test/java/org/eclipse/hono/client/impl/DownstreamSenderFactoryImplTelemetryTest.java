@@ -14,8 +14,6 @@
 package org.eclipse.hono.client.impl;
 
 import org.eclipse.hono.client.DownstreamSender;
-import org.eclipse.hono.client.HonoConnection;
-
 import io.vertx.core.Future;
 
 /**
@@ -25,7 +23,7 @@ public class DownstreamSenderFactoryImplTelemetryTest
         extends AbstractTenantTimeoutRelatedClientFactoryTest<DownstreamSender> {
 
     @Override
-    protected Future<DownstreamSender> getClientFuture(final HonoConnection connection, final String tenantId) {
+    protected Future<DownstreamSender> getClientFuture(final AmqpHonoConnection connection, final String tenantId) {
         return new DownstreamSenderFactoryImpl(connection).getOrCreateTelemetrySender(tenantId);
     }
 }

@@ -15,9 +15,7 @@ package org.eclipse.hono.client.impl;
 
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
-
 import org.eclipse.hono.client.CommandConsumerFactory;
-import org.eclipse.hono.client.HonoConnection;
 import org.eclipse.hono.util.CommandConstants;
 import org.eclipse.hono.util.ResourceIdentifier;
 import org.slf4j.Logger;
@@ -40,7 +38,7 @@ public class MappingAndDelegatingCommandConsumer extends CommandConsumer {
 
     private static final Logger LOG = LoggerFactory.getLogger(MappingAndDelegatingCommandConsumer.class);
 
-    private MappingAndDelegatingCommandConsumer(final HonoConnection connection, final ProtonReceiver receiver) {
+    private MappingAndDelegatingCommandConsumer(final AmqpHonoConnection connection, final ProtonReceiver receiver) {
 
         super(connection, receiver);
     }
@@ -63,8 +61,8 @@ public class MappingAndDelegatingCommandConsumer extends CommandConsumer {
      * @return A future indicating the outcome of the creation attempt.
      * @throws NullPointerException if any of the parameters other than tracer are {@code null}.
      */
-    public static Future<MappingAndDelegatingCommandConsumer> create(
-            final HonoConnection con,
+    static Future<MappingAndDelegatingCommandConsumer> create(
+            final AmqpHonoConnection con,
             final String tenantId,
             final ProtonMessageHandler messageHandler,
             final Handler<String> localCloseHandler,

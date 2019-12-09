@@ -21,11 +21,10 @@ import org.apache.qpid.proton.amqp.messaging.Accepted;
 import org.apache.qpid.proton.amqp.messaging.Released;
 import org.apache.qpid.proton.message.Message;
 import org.eclipse.hono.client.ClientErrorException;
-import org.eclipse.hono.client.HonoConnection;
 import org.eclipse.hono.client.MessageSender;
 import org.eclipse.hono.client.ServerErrorException;
 import org.eclipse.hono.client.impl.AbstractHonoClient;
-
+import org.eclipse.hono.client.impl.AmqpHonoConnection;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
@@ -47,7 +46,7 @@ public class GenericMessageSenderImpl extends AbstractHonoClient implements Mess
      * @param sender The sender link to send messages over.
      */
     public GenericMessageSenderImpl(
-            final HonoConnection con,
+            final AmqpHonoConnection con,
             final ProtonSender sender) {
 
         super(con);
@@ -65,7 +64,7 @@ public class GenericMessageSenderImpl extends AbstractHonoClient implements Mess
      * @throws NullPointerException if any of context, connection, tenant or handler is {@code null}.
      */
     public static Future<MessageSender> create(
-            final HonoConnection con,
+            final AmqpHonoConnection con,
             final String targetAddress,
             final Handler<String> closeHook) {
 

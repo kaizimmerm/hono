@@ -19,11 +19,11 @@ import java.util.Objects;
 
 import org.apache.qpid.proton.amqp.messaging.ApplicationProperties;
 import org.apache.qpid.proton.message.Message;
-import org.eclipse.hono.client.HonoConnection;
 import org.eclipse.hono.client.ServerErrorException;
 import org.eclipse.hono.client.StatusCodeMapper;
 import org.eclipse.hono.client.impl.AbstractHonoClient;
 import org.eclipse.hono.client.impl.AbstractRequestResponseClient;
+import org.eclipse.hono.client.impl.AmqpHonoConnection;
 import org.eclipse.hono.tracing.TracingHelper;
 import org.eclipse.hono.util.BufferResult;
 import org.eclipse.hono.util.CacheDirective;
@@ -66,7 +66,7 @@ public class LegacyCommandClientImpl extends AbstractRequestResponseClient<Buffe
      * @throws NullPointerException if any of the parameters are {@code null}.
      */
     LegacyCommandClientImpl(
-            final HonoConnection connection,
+            final AmqpHonoConnection connection,
             final String tenantId,
             final String deviceId,
             final String replyId) {
@@ -86,7 +86,7 @@ public class LegacyCommandClientImpl extends AbstractRequestResponseClient<Buffe
      * @throws NullPointerException if any of the parameters are {@code null}.
      */
     LegacyCommandClientImpl(
-            final HonoConnection connection,
+            final AmqpHonoConnection connection,
             final String tenantId,
             final String deviceId,
             final String replyId,
@@ -252,7 +252,7 @@ public class LegacyCommandClientImpl extends AbstractRequestResponseClient<Buffe
      * @throws NullPointerException if any of the parameters are {@code null}.
      */
     public static final Future<LegacyCommandClient> create(
-            final HonoConnection con,
+            final AmqpHonoConnection con,
             final String tenantId,
             final String deviceId,
             final String replyId,

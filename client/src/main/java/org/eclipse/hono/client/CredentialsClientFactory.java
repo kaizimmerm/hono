@@ -15,6 +15,7 @@
 package org.eclipse.hono.client;
 
 import org.eclipse.hono.cache.CacheProvider;
+import org.eclipse.hono.client.impl.AmqpHonoConnection;
 import org.eclipse.hono.client.impl.CredentialsClientFactoryImpl;
 
 import io.vertx.core.Future;
@@ -33,7 +34,11 @@ public interface CredentialsClientFactory extends ConnectionLifecycle<HonoConnec
      * @throws NullPointerException if connection is {@code null}
      */
     static CredentialsClientFactory create(final HonoConnection connection) {
-        return new CredentialsClientFactoryImpl(connection, null);
+        if (connection instanceof AmqpHonoConnection) {
+          return new CredentialsClientFactoryImpl((AmqpHonoConnection) connection, null);
+        }
+
+        return null;
     }
 
     /**
@@ -46,7 +51,11 @@ public interface CredentialsClientFactory extends ConnectionLifecycle<HonoConnec
      * @throws NullPointerException if connection is {@code null}
      */
     static CredentialsClientFactory create(final HonoConnection connection, final CacheProvider cacheProvider) {
-        return new CredentialsClientFactoryImpl(connection, cacheProvider);
+        if (connection instanceof AmqpHonoConnection) {
+          return new CredentialsClientFactoryImpl((AmqpHonoConnection) connection, cacheProvider);
+        }
+
+        return null;
     }
 
     /**

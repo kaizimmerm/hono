@@ -23,7 +23,6 @@ import org.apache.qpid.proton.message.Message;
 import org.eclipse.hono.client.ApplicationClientFactory;
 import org.eclipse.hono.client.AsyncCommandClient;
 import org.eclipse.hono.client.CommandClient;
-import org.eclipse.hono.client.HonoConnection;
 import org.eclipse.hono.client.MessageConsumer;
 import org.eclipse.hono.util.CommandConstants;
 
@@ -47,7 +46,7 @@ public class ApplicationClientFactoryImpl extends AbstractHonoClientFactory impl
      * 
      * @param connection The connection to use.
      */
-    public ApplicationClientFactoryImpl(final HonoConnection connection) {
+    public ApplicationClientFactoryImpl(final AmqpHonoConnection connection) {
         super(connection);
         consumerFactory = new ClientFactory<>();
         commandClientFactory = new CachingClientFactory<>(connection.getVertx(), c -> c.isOpen());

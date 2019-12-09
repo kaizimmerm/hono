@@ -53,7 +53,7 @@ import io.vertx.proton.ProtonSender;
 public class DownstreamSenderFactoryImplTest {
 
     private Vertx vertx;
-    private HonoConnection connection;
+    private AmqpHonoConnection connection;
     private DownstreamSenderFactoryImpl factory;
 
     /**

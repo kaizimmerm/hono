@@ -13,7 +13,6 @@
 
 package org.eclipse.hono.client.impl;
 
-import org.eclipse.hono.client.HonoConnection;
 import org.eclipse.hono.client.MessageConsumer;
 
 import io.vertx.core.AsyncResult;
@@ -34,7 +33,7 @@ public abstract class AbstractConsumer extends AbstractHonoClient implements Mes
      * @param connection The connection to use.
      * @param receiver The proton receiver link.
      */
-    public AbstractConsumer(final HonoConnection connection, final ProtonReceiver receiver) {
+    public AbstractConsumer(final AmqpHonoConnection connection, final ProtonReceiver receiver) {
 
         super(connection);
         this.receiver = receiver;

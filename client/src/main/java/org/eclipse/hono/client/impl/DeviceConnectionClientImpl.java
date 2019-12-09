@@ -21,7 +21,6 @@ import java.util.UUID;
 
 import org.apache.qpid.proton.amqp.messaging.ApplicationProperties;
 import org.eclipse.hono.client.DeviceConnectionClient;
-import org.eclipse.hono.client.HonoConnection;
 import org.eclipse.hono.client.StatusCodeMapper;
 import org.eclipse.hono.util.CacheDirective;
 import org.eclipse.hono.util.DeviceConnectionConstants;
@@ -58,7 +57,7 @@ public class DeviceConnectionClientImpl extends AbstractRequestResponseClient<De
      * @param connection The connection to the Device Connection service.
      * @param tenantId The identifier of the tenant for which the client should be created.
      */
-    protected DeviceConnectionClientImpl(final HonoConnection connection, final String tenantId) {
+    protected DeviceConnectionClientImpl(final AmqpHonoConnection connection, final String tenantId) {
         super(connection, tenantId);
     }
 
@@ -71,7 +70,7 @@ public class DeviceConnectionClientImpl extends AbstractRequestResponseClient<De
      * @param receiver The AMQP link to use for receiving responses from the service.
      */
     protected DeviceConnectionClientImpl(
-            final HonoConnection connection,
+            final AmqpHonoConnection connection,
             final String tenantId,
             final ProtonSender sender,
             final ProtonReceiver receiver) {
@@ -133,8 +132,8 @@ public class DeviceConnectionClientImpl extends AbstractRequestResponseClient<De
      * @return A future indicating the outcome of the creation attempt.
      * @throws NullPointerException if any of the parameters other than cache provider is {@code null}.
      */
-    public static final Future<DeviceConnectionClient> create(
-            final HonoConnection con,
+    static final Future<DeviceConnectionClient> create(
+            final AmqpHonoConnection con,
             final String tenantId,
             final Handler<String> senderCloseHook,
             final Handler<String> receiverCloseHook) {

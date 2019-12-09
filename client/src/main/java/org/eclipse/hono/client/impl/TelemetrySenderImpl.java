@@ -20,7 +20,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.qpid.proton.amqp.transport.DeliveryState;
 import org.apache.qpid.proton.message.Message;
 import org.eclipse.hono.client.DownstreamSender;
-import org.eclipse.hono.client.HonoConnection;
 import org.eclipse.hono.client.ServerErrorException;
 import org.eclipse.hono.client.ServiceInvocationException;
 import org.eclipse.hono.config.ClientConfigProperties;
@@ -43,7 +42,7 @@ import io.vertx.proton.ProtonSender;
 public final class TelemetrySenderImpl extends AbstractDownstreamSender {
 
     TelemetrySenderImpl(
-            final HonoConnection con,
+            final AmqpHonoConnection con,
             final ProtonSender sender,
             final String tenantId,
             final String targetAddress) {
@@ -90,7 +89,7 @@ public final class TelemetrySenderImpl extends AbstractDownstreamSender {
      * @throws NullPointerException if any of context, connection, tenant or handler is {@code null}.
      */
     public static Future<DownstreamSender> create(
-            final HonoConnection con,
+            final AmqpHonoConnection con,
             final String tenantId,
             final Handler<String> remoteCloseHook) {
 

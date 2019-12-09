@@ -15,10 +15,8 @@
 package org.eclipse.hono.client.impl;
 
 import java.util.Objects;
-
 import org.eclipse.hono.client.DeviceConnectionClient;
 import org.eclipse.hono.client.DeviceConnectionClientFactory;
-import org.eclipse.hono.client.HonoConnection;
 import org.eclipse.hono.util.Constants;
 
 import io.vertx.core.Future;
@@ -40,7 +38,7 @@ public class DeviceConnectionClientFactoryImpl extends AbstractHonoClientFactory
      * @param connection The connection to use.
      * @throws NullPointerException if connection is {@code null}
      */
-    public DeviceConnectionClientFactoryImpl(final HonoConnection connection) {
+    public DeviceConnectionClientFactoryImpl(final AmqpHonoConnection connection) {
         super(connection);
         this.deviceConnectionClientFactory = new CachingClientFactory<>(connection.getVertx(), c -> c.isOpen());
         connection.getVertx().eventBus().consumer(Constants.EVENT_BUS_ADDRESS_TENANT_TIMED_OUT,

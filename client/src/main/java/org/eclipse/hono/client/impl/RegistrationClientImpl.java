@@ -22,7 +22,6 @@ import java.util.UUID;
 import org.apache.qpid.proton.amqp.messaging.ApplicationProperties;
 import org.eclipse.hono.cache.CacheProvider;
 import org.eclipse.hono.client.ClientErrorException;
-import org.eclipse.hono.client.HonoConnection;
 import org.eclipse.hono.client.RegistrationClient;
 import org.eclipse.hono.client.StatusCodeMapper;
 import org.eclipse.hono.util.CacheDirective;
@@ -61,7 +60,7 @@ public class RegistrationClientImpl extends AbstractRequestResponseClient<Regist
      * @param connection The connection to Hono.
      * @param tenantId The identifier of the tenant for which the client should be created.
      */
-    protected RegistrationClientImpl(final HonoConnection connection, final String tenantId) {
+    protected RegistrationClientImpl(final AmqpHonoConnection connection, final String tenantId) {
         super(connection, tenantId);
     }
 
@@ -74,7 +73,7 @@ public class RegistrationClientImpl extends AbstractRequestResponseClient<Regist
      * @param receiver The AMQP link to use for receiving responses from the service.
      */
     protected RegistrationClientImpl(
-            final HonoConnection connection,
+            final AmqpHonoConnection connection,
             final String tenantId,
             final ProtonSender sender,
             final ProtonReceiver receiver) {
@@ -137,9 +136,9 @@ public class RegistrationClientImpl extends AbstractRequestResponseClient<Regist
      * @return A future indicating the outcome of the creation attempt.
      * @throws NullPointerException if any of the parameters other than cache provider is {@code null}.
      */
-    public static final Future<RegistrationClient> create(
+    static final Future<RegistrationClient> create(
             final CacheProvider cacheProvider,
-            final HonoConnection con,
+            final AmqpHonoConnection con,
             final String tenantId,
             final Handler<String> senderCloseHook,
             final Handler<String> receiverCloseHook) {

@@ -29,7 +29,6 @@ import org.apache.qpid.proton.message.Message;
 import org.eclipse.hono.client.Command;
 import org.eclipse.hono.client.CommandContext;
 import org.eclipse.hono.client.DelegatedCommandSender;
-import org.eclipse.hono.client.HonoConnection;
 import org.eclipse.hono.config.ClientConfigProperties;
 import org.eclipse.hono.util.CommandConstants;
 import org.junit.Before;
@@ -54,7 +53,7 @@ public class DelegateViaDownstreamPeerCommandHandlerTest {
     private DelegateViaDownstreamPeerCommandHandler delegateViaDownstreamPeerCommandHandler;
     private DelegatedCommandSender delegatedCommandSender;
     private String replyTo;
-    private HonoConnection connection;
+    private AmqpHonoConnection connection;
     private ProtonSender protonSender;
 
     /**
@@ -79,7 +78,7 @@ public class DelegateViaDownstreamPeerCommandHandlerTest {
         delegateViaDownstreamPeerCommandHandler = new DelegateViaDownstreamPeerCommandHandler(
                 (tenantIdParam, deviceIdParam) -> Future.succeededFuture(delegatedCommandSender));
 
-        connection= mock(HonoConnection.class);
+        connection= mock(AmqpHonoConnection.class);
         when(connection.getConfig()).thenReturn(new ClientConfigProperties());
         final Vertx vertx = mock(Vertx.class);
         when(connection.getVertx()).thenReturn(vertx);

@@ -20,7 +20,6 @@ import java.util.Objects;
 import org.apache.qpid.proton.amqp.messaging.ApplicationProperties;
 import org.apache.qpid.proton.message.Message;
 import org.eclipse.hono.client.CommandClient;
-import org.eclipse.hono.client.HonoConnection;
 import org.eclipse.hono.client.ServerErrorException;
 import org.eclipse.hono.client.ServiceInvocationException;
 import org.eclipse.hono.client.StatusCodeMapper;
@@ -64,7 +63,7 @@ public class CommandClientImpl extends AbstractRequestResponseClient<BufferResul
      * @throws NullPointerException if any of the parameters are {@code null}.
      */
     CommandClientImpl(
-            final HonoConnection connection,
+            final AmqpHonoConnection connection,
             final String tenantId,
             final String replyId) {
 
@@ -82,7 +81,7 @@ public class CommandClientImpl extends AbstractRequestResponseClient<BufferResul
      * @throws NullPointerException if any of the parameters are {@code null}.
      */
     CommandClientImpl(
-            final HonoConnection connection,
+            final AmqpHonoConnection connection,
             final String tenantId,
             final String replyId,
             final ProtonSender sender,
@@ -261,8 +260,8 @@ public class CommandClientImpl extends AbstractRequestResponseClient<BufferResul
      * @return A future indicating the outcome.
      * @throws NullPointerException if any of the parameters are {@code null}.
      */
-    public static final Future<CommandClient> create(
-            final HonoConnection con,
+    static final Future<CommandClient> create(
+            final AmqpHonoConnection con,
             final String tenantId,
             final String replyId,
             final Handler<String> senderCloseHook,
